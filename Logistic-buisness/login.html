@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to your VelocityLog account or admin dashboard. Access your shipments, manage bookings, and control system settings.">
+    <title>Login | VelocityLog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        /* Login Page Specific Styles */
+        .login-section {
+            padding: 8rem 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .login-section {
+            background: #1a1a1a;
+        }
+        
+        .login-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            width: 90%;
+        }
+        
+        body.dark-mode .login-container {
+            background: #1e1e1e;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .login-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #666;
+        }
+        
+        body.dark-mode .login-header p {
+            color: #aaa;
+        }
+        
+        /* Login Type Toggle */
+        .login-type-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        body.dark-mode .login-type-toggle {
+            background: #2a2a2a;
+        }
+        
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .toggle-option.active {
+            color: var(--secondary);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--accent);
+            border-radius: 50px;
+            transition: var(--transition);
+            z-index: 1;
+        }
+        
+        .toggle-slider.admin {
+            transform: translateX(100%);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 0.5rem;
+        }
+        
+        .forgot-password {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        body.dark-mode .divider::before {
+            background: #444;
+        }
+        
+        .divider span {
+            background: var(--secondary);
+            padding: 0 1rem;
+            position: relative;
+            color: #666;
+        }
+        
+        body.dark-mode .divider span {
+            background: #1e1e1e;
+            color: #aaa;
+        }
+        
+        .google-login {
+            width: 100%;
+            padding: 0.9rem;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .google-login:hover {
+            background: #3367d6;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+        
+        body.dark-mode .signup-link {
+            color: #aaa;
+        }
+        
+        .signup-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .admin-info {
+            background: rgba(255, 62, 0, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+        
+        .admin-info.show {
+            display: block;
+        }
+        
+        .admin-info h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .admin-info p {
+            color: #aaa;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+        
+        body.dark-mode .notification {
+            background: #2a2a2a;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .notification i {
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .login-section {
+                padding: 6rem 0;
+            }
+            
+            .login-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING LOGIN PAGE</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+                <div class="flag">🇳🇬</div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html" aria-label="Home">Home</a></li>
+                    <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                    <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+                    <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+                    <li><a href="about.html" aria-label="About Us">About</a></li>
+                    <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline" aria-label="Login to your account">Login</a>
+                <a href="quote.html" class="btn" aria-label="Get a quote">Get Quote</a>
+            </div>
+            
+            <div class="mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+        <div class="close-btn" id="closeNav" aria-label="Close mobile menu">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="index.html" class="logo">
+            <i class="fas fa-boxes-packing"></i>
+            Velocity<span>Log</span>
+        </a>
+        <ul>
+            <li><a href="index.html" aria-label="Home">Home</a></li>
+            <li><a href="index.html#services" aria-label="Services">Services</a></li>
+            <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+            <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+            <li><a href="about.html" aria-label="About Us">About</a></li>
+            <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+            <li><a href="login.html" aria-label="Login to your account">Login</a></li>
+            <li><a href="quote.html" aria-label="Get a quote">Get Quote</a></li>
+        </ul>
+    </div>
+
+    <!-- Login Section -->
+    <section class="login-section" aria-label="Login section">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your VelocityLog account</p>
+            </div>
+            
+            <!-- Login Type Toggle -->
+            <div class="login-type-toggle">
+                <div class="toggle-slider" id="toggleSlider"></div>
+                <div class="toggle-option active" id="userToggle">User Login</div>
+                <div class="toggle-option" id="adminToggle">Admin Login</div>
+            </div>
+            
+            <!-- Admin Info Panel -->
+            <div class="admin-info" id="adminInfo">
+                <h4><i class="fas fa-info-circle"></i> Admin Access</h4>
+                <p>Use your admin credentials to access the dashboard and manage the system.</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="btn login-btn">Login</button>
+            </form>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <button class="google-login" id="googleLogin">
+                <i class="fab fa-google"></i>
+                Sign in with Google
+            </button>
+            
+            <div class="signup-link">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-label="Footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-boxes-packing"></i>
+                        Velocity<span>Log</span>
+                    </a>
+                    <p>Delivering innovative logistics solutions worldwide with speed, precision, and reliability.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html" aria-label="Home">Home</a></li>
+                        <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                        <li><a href="track.html" aria-label="Track Shipment">Track Shipment</a></li>
+                        <li><a href="index.html#quote" aria-label="Get Quote">Get Quote</a></li>
+                        <li><a href="#" aria-label="Careers">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#" aria-label="Ocean Freight">Ocean Freight</a></li>
+                        <li><a href="#" aria-label="Air Cargo">Air Cargo</a></li>
+                        <li><a href="#" aria-label="Ground Transport">Ground Transport</a></li>
+                        <li><a href="#" aria-label="Warehousing">Warehousing</a></li>
+                        <li><a href="#" aria-label="Supply Chain">Supply Chain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Nigerian Offices</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos HQ: 123 Victoria Island</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Abuja Office: 45 Central District</li>
+                        <li><i class="fas fa-phone"></i> +234 (0) 812 345 6789</li>
+                        <li><i class="fas fa-envelope"></i> info@velocitylog.ng</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 6PM WAT</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VelocityLog. All rights reserved. | Designed by Vend Agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeNav = document.getElementById('closeNav');
+        
+        mobileToggle.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeNav.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileNav.classList.contains('active') && 
+                !mobileNav.contains(event.target) && 
+                !mobileToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu when a link is clicked
+        const mobileLinks = mobileNav.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Login type toggle
+        const userToggle = document.getElementById('userToggle');
+        const adminToggle = document.getElementById('adminToggle');
+        const toggleSlider = document.getElementById('toggleSlider');
+        const adminInfo = document.getElementById('adminInfo');
+        
+        let isAdminLogin = false;
+        
+        userToggle.addEventListener('click', function() {
+            if (isAdminLogin) {
+                isAdminLogin = false;
+                userToggle.classList.add('active');
+                adminToggle.classList.remove('active');
+                toggleSlider.classList.remove('admin');
+                adminInfo.classList.remove('show');
+                
+                // Update form placeholder
+                document.getElementById('email').placeholder = 'Enter your email';
+            }
+        });
+        
+        adminToggle.addEventListener('click', function() {
+            if (!isAdminLogin) {
+                isAdminLogin = true;
+                adminToggle.classList.add('active');
+                userToggle.classList.remove('active');
+                toggleSlider.classList.add('admin');
+                adminInfo.classList.add('show');
+                
+                // Update form placeholder
+                document.getElementById('email').placeholder = 'Enter admin email';
+            }
+        });
+
+        // User data management
+        const userData = {
+            users: [
+                { email: 'user@example.com', password: 'password123', name: 'John Doe' },
+                { email: 'admin@velocitylog.ng', password: 'admin123', name: 'Admin User', role: 'admin' }
+            ],
+            currentUser: null
+        };
+
+        // Load saved user data from localStorage
+        function loadUserData() {
+            const savedUsers = localStorage.getItem('velocitylog_users');
+            if (savedUsers) {
+                userData.users = JSON.parse(savedUsers);
+            }
+            
+            const savedCurrentUser = localStorage.getItem('velocitylog_currentUser');
+            if (savedCurrentUser) {
+                userData.currentUser = JSON.parse(savedCurrentUser);
+            }
+            
+            // Auto-fill email if remember me was checked
+            const rememberMe = localStorage.getItem('velocitylog_rememberMe');
+            if (rememberMe === 'true' && userData.currentUser) {
+                document.getElementById('email').value = userData.currentUser.email;
+                document.getElementById('rememberMe').checked = true;
+            }
+        }
+
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('velocitylog_users', JSON.stringify(userData.users));
+            localStorage.setItem('velocitylog_currentUser', JSON.stringify(userData.currentUser));
+            localStorage.setItem('velocitylog_rememberMe', document.getElementById('rememberMe').checked);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = 'notification show ' + type;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Login form submission
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Check if user exists
+            const user = userData.users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Check if admin login is selected but user is not admin
+                if (isAdminLogin && user.role !== 'admin') {
+                    showNotification('This account does not have admin privileges.', 'error');
+                    return;
+                }
+                
+                // Check if user login is selected but user is admin
+                if (!isAdminLogin && user.role === 'admin') {
+                    showNotification('Please use Admin Login for administrator accounts.', 'error');
+                    return;
+                }
+                
+                userData.currentUser = user;
+                saveUserData();
+                showNotification(`Welcome back, ${user.name}!`);
+                
+                // Redirect based on user role
+                setTimeout(() => {
+                    if (user.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 1500);
+            } else {
+                showNotification('Invalid email or password. Please try again.', 'error');
+            }
+        });
+
+        // Google Sign-In (simulated)
+        const googleLogin = document.getElementById('googleLogin');
+        googleLogin.addEventListener('click', function() {
+            // Simulate Google Sign-In
+            showNotification('Signing in with Google...');
+            
+            setTimeout(() => {
+                // Create a mock Google user
+                const googleUser = {
+                    email: 'google.user@gmail.com',
+                    name: 'Google User',
+                    provider: 'google',
+                    role: 'user'
+                };
+                
+                // Check if user already exists
+                let user = userData.users.find(u => u.email === googleUser.email);
+                
+                if (!user) {
+                    // Add new user
+                    user = {
+                        email: googleUser.email,
+                        name: googleUser.name,
+                        password: '', // No password for Google sign-in
+                        provider: 'google',
+                        role: 'user'
+                    };
+                    userData.users.push(user);
+                }
+                
+                userData.currentUser = user;
+                saveUserData();
+                
+                showNotification(`Welcome, ${user.name}!`);
+                
+                // Redirect to dashboard after successful login
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }, 1500);
+        });
+
+        // Forgot password functionality
+        const forgotPassword = document.querySelector('.forgot-password');
+        forgotPassword.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            
+            if (!email) {
+                showNotification('Please enter your email address first.', 'error');
+                return;
+            }
+            
+            // Check if user exists
+            const user = userData.users.find(u => u.email === email);
+            
+            if (user) {
+                showNotification(`Password reset link sent to ${email}`);
+            } else {
+                showNotification('Email not found in our system.', 'error');
+            }
+        });
+
+        // Initialize user data
+        loadUserData();
+    </script>
+</body>
+</html>
