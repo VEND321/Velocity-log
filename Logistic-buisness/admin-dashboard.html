@@ -1,0 +1,3303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VelocityLog Admin Dashboard - Monitor and manage all logistics operations in real-time.">
+    <title>Admin Dashboard | VelocityLog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary: #FF3E00;
+            --secondary: #ffffff;
+            --accent: #FF7B54;
+            --dark: #0a192f;
+            --light: #f5f7fa;
+            --light-gray: #eef2f5;
+            --dark-gray: #6c757d;
+            --border-radius: 10px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--light-gray);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body.dark-mode {
+            background: #0a192f;
+            color: #e6f1ff;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        button, .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover, .btn:hover {
+            background: #e03500;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 62, 0, 0.3);
+        }
+        
+        button:focus, .btn:focus {
+            outline: 3px solid rgba(255, 62, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 62, 0, 0.1);
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .preloader-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .delivery-truck {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 4px;
+            animation: loading 2s forwards;
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .loading-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Admin Dashboard Specific Styles */
+        .admin-dashboard {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .admin-dashboard {
+            background: #0a192f;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: var(--secondary);
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.dark-mode .sidebar {
+            background: #0a192f;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .sidebar-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+        
+        .sidebar-logo:hover {
+            opacity: 0.8;
+        }
+        
+        .sidebar-logo span {
+            color: var(--accent);
+        }
+        
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-info p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .menu-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .menu-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            gap: 12px;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 62, 0, 0.2);
+            border-left-color: var(--accent);
+        }
+        
+        .menu-item:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 1rem;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .content-header {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        body.dark-mode .content-header {
+            background: #172a45;
+        }
+        
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .header-title p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .header-title p {
+            color: #a8b2d1;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: var(--secondary);
+            color: var(--primary);
+            width: 250px;
+            transition: var(--transition);
+        }
+        
+        body.dark-mode .search-box input {
+            background: #0a192f;
+            border-color: #2a3f5f;
+            color: #e6f1ff;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .search-box i {
+            color: #a8b2d1;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dashboard-card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        body.dark-mode .dashboard-card {
+            background: #172a45;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+        
+        .dashboard-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .card-icon.blue {
+            background: linear-gradient(135deg, #2196F3, #0d47a1);
+        }
+        
+        .card-icon.green {
+            background: linear-gradient(135deg, #4CAF50, #1b5e20);
+        }
+        
+        .card-icon.orange {
+            background: linear-gradient(135deg, #FF9800, #e65100);
+        }
+        
+        .card-icon.red {
+            background: linear-gradient(135deg, #F44336, #b71c1c);
+        }
+        
+        .card-icon.purple {
+            background: linear-gradient(135deg, #9C27B0, #4a148c);
+        }
+        
+        .card-icon.teal {
+            background: linear-gradient(135deg, #009688, #004d40);
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-title {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .card-title {
+            color: #a8b2d1;
+        }
+        
+        .card-change {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .card-change.positive {
+            color: #4CAF50;
+        }
+        
+        .card-change.negative {
+            color: #F44336;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body.dark-mode .content-section {
+            background: #172a45;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            background: var(--secondary);
+            z-index: 10;
+        }
+        
+        body.dark-mode .data-table th {
+            border-bottom: 1px solid #2a3f5f;
+            color: #a8b2d1;
+            background: #172a45;
+        }
+        
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .data-table td {
+            border-bottom: 1px solid #2a3f5f;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        body.dark-mode .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.in-transit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-badge.delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.pending {
+            background: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .status-badge.delayed {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-badge.active {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        body.dark-mode .status-badge.in-transit {
+            background: rgba(25, 118, 210, 0.2);
+            color: #64b5f6;
+        }
+        
+        body.dark-mode .status-badge.delivered {
+            background: rgba(56, 142, 60, 0.2);
+            color: #81c784;
+        }
+        
+        body.dark-mode .status-badge.pending {
+            background: rgba(255, 160, 0, 0.2);
+            color: #ffb74d;
+        }
+        
+        body.dark-mode .status-badge.delayed {
+            background: rgba(198, 40, 40, 0.2);
+            color: #ef9a9a;
+        }
+        
+        body.dark-mode .status-badge.active {
+            background: rgba(56, 142, 60, 0.2);
+            color: #81c784;
+        }
+        
+        body.dark-mode .status-badge.inactive {
+            background: rgba(198, 40, 40, 0.2);
+            color: #ef9a9a;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Map Container */
+        .map-container {
+            height: 400px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+            background: #e9ecef;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #6c757d;
+        }
+        
+        .map-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Driver Cards */
+        .driver-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .driver-card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .driver-card {
+            background: #172a45;
+        }
+        
+        .driver-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .driver-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+        
+        .driver-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .driver-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .driver-info h4 {
+            margin-bottom: 0.2rem;
+        }
+        
+        .driver-info p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .driver-info p {
+            color: #a8b2d1;
+        }
+        
+        .driver-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .driver-stat {
+            text-align: center;
+        }
+        
+        .driver-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .driver-stat-label {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .driver-stat-label {
+            color: #a8b2d1;
+        }
+        
+        .driver-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Analytics Charts */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #6c757d;
+        }
+        
+        .chart-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e6f1ff;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select,
+        body.dark-mode .form-group textarea {
+            background: #0a192f;
+            border-color: #2a3f5f;
+            color: #e6f1ff;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body.dark-mode .modal-content {
+            background: #172a45;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-gray);
+            transition: var(--transition);
+        }
+        
+        body.dark-mode .close-modal {
+            color: #a8b2d1;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+        
+        .close-modal:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 62, 0, 0.5);
+        }
+        
+        /* Content Editor */
+        .content-editor {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .editor-section {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+        
+        body.dark-mode .editor-section {
+            background: #0a192f;
+        }
+        
+        .editor-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .content-list {
+            list-style: none;
+        }
+        
+        .content-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode .content-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .content-item.active {
+            background: rgba(255, 62, 0, 0.1);
+            color: var(--accent);
+        }
+        
+        .content-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 62, 0, 0.5);
+        }
+        
+        .content-form {
+            display: none;
+        }
+        
+        .content-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Mobile Toggle */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .mobile-sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .mobile-sidebar-toggle:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode .theme-toggle {
+            color: #e6f1ff;
+        }
+        
+        body.dark-mode .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .theme-toggle:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 62, 0, 0.5);
+        }
+        
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-width: 300px;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification-toast.success {
+            background: #4CAF50;
+        }
+        
+        .notification-toast.error {
+            background: #f44336;
+        }
+        
+        .notification-toast.info {
+            background: #2196F3;
+        }
+        
+        .notification-toast.warning {
+            background: #ff9800;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .content-editor {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .mobile-sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .header-actions {
+                flex-wrap: wrap;
+            }
+            
+            .search-box input {
+                width: 180px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .driver-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .notification-toast {
+                top: 80px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="true">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING ADMIN DASHBOARD</div>
+        </div>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="Toggle sidebar" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Admin navigation">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-logo" aria-label="VelocityLog Home">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="user-avatar" id="adminAvatar" aria-hidden="true">A</div>
+                <div class="user-info">
+                    <h4 id="adminName">Admin User</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+                    <a href="#" class="menu-item active" data-section="dashboard" role="tab" aria-selected="true" tabindex="0">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="shipments" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>All Shipments</span>
+                        <span class="menu-badge" aria-label="24 pending shipments">24</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="dispatch-map" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Live Dispatch Map</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <div class="menu-section-title">Management</div>
+                    <a href="#" class="menu-item" data-section="drivers" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Driver Management</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="clients" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Client Management</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="payments" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Payments Overview</span>
+                        <span class="menu-badge" aria-label="5 pending payments">5</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <div class="menu-section-title">Analytics</div>
+                    <a href="#" class="menu-item" data-section="analytics" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics Dashboard</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <div class="menu-section-title">Settings</div>
+                    <a href="#" class="menu-item" data-section="website-content" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit Website Content</span>
+                    </a>
+                    <a href="#" class="menu-item" data-section="settings" role="tab" aria-selected="false" tabindex="-1">
+                        <i class="fas fa-cog"></i>
+                        <span>System Settings</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-outline" id="logoutBtn" style="width: 100%;" aria-label="Logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Content Header -->
+            <div class="content-header">
+                <div class="header-title">
+                    <h1>Admin Dashboard</h1>
+                    <p>Welcome back, <span id="adminNameHeader">Admin</span>! Here's what's happening today.</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <input type="text" placeholder="Search..." aria-label="Search">
+                    </div>
+                    
+                    <div class="notification-icon" tabindex="0" role="button" aria-label="Notifications" aria-describedby="notification-count">
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-badge" id="notification-count" aria-hidden="true">3</div>
+                    </div>
+                    
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section" role="tabpanel" aria-labelledby="dashboard-tab">
+                <div class="section-header">
+                    <h2 class="section-title">Overview</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-small" id="refreshData" aria-label="Refresh data">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Active shipments">
+                        <div class="card-header">
+                            <div class="card-icon blue">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div class="card-change positive" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </div>
+                        </div>
+                        <div class="card-value" id="activeShipments">24</div>
+                        <div class="card-title">Active Shipments</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Delivered today">
+                        <div class="card-header">
+                            <div class="card-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="card-change positive" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </div>
+                        </div>
+                        <div class="card-value" id="deliveredToday">18</div>
+                        <div class="card-title">Delivered Today</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Delayed shipments">
+                        <div class="card-header">
+                            <div class="card-icon orange">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="card-change negative" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 3%
+                            </div>
+                        </div>
+                        <div class="card-value" id="delayedShipments">3</div>
+                        <div class="card-title">Delayed Shipments</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Active drivers">
+                        <div class="card-header">
+                            <div class="card-icon purple">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-change positive" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 5%
+                            </div>
+                        </div>
+                        <div class="card-value" id="activeDrivers">12</div>
+                        <div class="card-title">Active Drivers</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Revenue today">
+                        <div class="card-header">
+                            <div class="card-icon teal">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="card-change positive" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 15%
+                            </div>
+                        </div>
+                        <div class="card-value" id="revenueToday">₦850,000</div>
+                        <div class="card-title">Revenue Today</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Fuel cost today">
+                        <div class="card-header">
+                            <div class="card-icon red">
+                                <i class="fas fa-gas-pump"></i>
+                            </div>
+                            <div class="card-change negative" aria-hidden="true">
+                                <i class="fas fa-arrow-up"></i> 2%
+                            </div>
+                        </div>
+                        <div class="card-value" id="fuelCost">₦120,000</div>
+                        <div class="card-title">Fuel Cost Today</div>
+                    </div>
+                </div>
+                
+                <!-- Recent Shipments -->
+                <div class="section-header">
+                    <h2 class="section-title">Recent Shipments</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-small" id="viewAllShipments" aria-label="View all shipments">
+                            <i class="fas fa-list"></i> View All
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" aria-label="Recent shipments">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tracking ID</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Origin</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Driver</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentShipmentsTable">
+                            <tr>
+                                <td>VL123456</td>
+                                <td>John Doe</td>
+                                <td>Lagos</td>
+                                <td>Abuja</td>
+                                <td>Ahmed Ibrahim</td>
+                                <td><span class="status-badge in-transit">In Transit</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewShipment('VL123456')" aria-label="View shipment VL123456">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="editShipment('VL123456')" aria-label="Edit shipment VL123456">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>VL789012</td>
+                                <td>Jane Smith</td>
+                                <td>Port Harcourt</td>
+                                <td>Kano</td>
+                                <td>Musa Abdullahi</td>
+                                <td><span class="status-badge delivered">Delivered</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewShipment('VL789012')" aria-label="View shipment VL789012">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="editShipment('VL789012')" aria-label="Edit shipment VL789012">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>VL345678</td>
+                                <td>Robert Johnson</td>
+                                <td>Abuja</td>
+                                <td>Enugu</td>
+                                <td>Chukwuemeka Okafor</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewShipment('VL345678')" aria-label="View shipment VL345678">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="editShipment('VL345678')" aria-label="Edit shipment VL345678">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>VL901234</td>
+                                <td>Sarah Williams</td>
+                                <td>Kano</td>
+                                <td>Lagos</td>
+                                <td>Ibrahim Bello</td>
+                                <td><span class="status-badge delayed">Delayed</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewShipment('VL901234')" aria-label="View shipment VL901234">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="editShipment('VL901234')" aria-label="Edit shipment VL901234">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>VL567890</td>
+                                <td>Michael Brown</td>
+                                <td>Enugu</td>
+                                <td>Port Harcourt</td>
+                                <td>Tunde Adekunle</td>
+                                <td><span class="status-badge in-transit">In Transit</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewShipment('VL567890')" aria-label="View shipment VL567890">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="editShipment('VL567890')" aria-label="Edit shipment VL567890">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Shipments Section -->
+            <div id="shipments-section" class="content-section" role="tabpanel" aria-labelledby="shipments-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">All Shipments</h2>
+                    <div class="section-actions">
+                        <button class="btn" id="addShipmentBtn" aria-label="Add new shipment">
+                            <i class="fas fa-plus"></i> Add Shipment
+                        </button>
+                        <button class="btn btn-outline" id="exportShipments" aria-label="Export shipments">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" aria-label="All shipments">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tracking ID</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Origin</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Driver</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allShipmentsTable">
+                            <!-- Shipments will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Dispatch Map Section -->
+            <div id="dispatch-map-section" class="content-section" role="tabpanel" aria-labelledby="dispatch-map-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Live Dispatch Map</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-small" id="refreshMap" aria-label="Refresh map">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Live Dispatch Map</h3>
+                        <p>Real-time tracking of all active deliveries</p>
+                        <p>Integration with Google Maps API would go here</p>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <h2 class="section-title">Active Drivers</h2>
+                </div>
+                
+                <div class="driver-grid" id="activeDriversGrid">
+                    <!-- Driver cards will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Driver Management Section -->
+            <div id="drivers-section" class="content-section" role="tabpanel" aria-labelledby="drivers-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Driver Management</h2>
+                    <div class="section-actions">
+                        <button class="btn" id="addDriverBtn" aria-label="Add new driver">
+                            <i class="fas fa-plus"></i> Add Driver
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" aria-label="Drivers">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">License</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Active Shipments</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driversTable">
+                            <!-- Drivers will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Client Management Section -->
+            <div id="clients-section" class="content-section" role="tabpanel" aria-labelledby="clients-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Client Management</h2>
+                    <div class="section-actions">
+                        <button class="btn" id="addClientBtn" aria-label="Add new client">
+                            <i class="fas fa-plus"></i> Add Client
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" aria-label="Clients">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Company</th>
+                                <th scope="col">Total Shipments</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTable">
+                            <!-- Clients will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Payments Overview Section -->
+            <div id="payments-section" class="content-section" role="tabpanel" aria-labelledby="payments-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Payments Overview</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-outline" id="exportPayments" aria-label="Export payments">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Received payments">
+                        <div class="card-header">
+                            <div class="card-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="receivedPayments">₦2,450,000</div>
+                        <div class="card-title">Received This Month</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Pending payments">
+                        <div class="card-header">
+                            <div class="card-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="pendingPayments">₦850,000</div>
+                        <div class="card-title">Pending Payments</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Failed payments">
+                        <div class="card-header">
+                            <div class="card-icon red">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="failedPayments">₦120,000</div>
+                        <div class="card-title">Failed Payments</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Cash on delivery">
+                        <div class="card-header">
+                            <div class="card-icon blue">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="codCollected">₦680,000</div>
+                        <div class="card-title">COD Collected</div>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <h2 class="section-title">Recent Transactions</h2>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" aria-label="Recent transactions">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Method</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTable">
+                            <!-- Payments will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Analytics Dashboard Section -->
+            <div id="analytics-section" class="content-section" role="tabpanel" aria-labelledby="analytics-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Analytics Dashboard</h2>
+                    <div class="section-actions">
+                        <select id="analyticsPeriod" class="form-group" aria-label="Select analytics period">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month" selected>This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                        <button class="btn btn-outline" id="exportAnalytics" aria-label="Export analytics">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Daily delivery count">
+                        <div class="card-header">
+                            <div class="card-icon blue">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="dailyDeliveries">142</div>
+                        <div class="card-title">Daily Delivery Count</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Monthly COD collected">
+                        <div class="card-header">
+                            <div class="card-icon green">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="monthlyCOD">₦4,250,000</div>
+                        <div class="card-title">Monthly COD Collected</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Late deliveries">
+                        <div class="card-header">
+                            <div class="card-icon orange">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="lateDeliveries">8</div>
+                        <div class="card-title">Late Deliveries</div>
+                    </div>
+                    
+                    <div class="dashboard-card" tabindex="0" role="button" aria-label="Monthly fuel cost">
+                        <div class="card-header">
+                            <div class="card-icon red">
+                                <i class="fas fa-gas-pump"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="monthlyFuel">₦3,850,000</div>
+                        <div class="card-title">Monthly Fuel Cost</div>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <h2 class="section-title">Delivery Trends</h2>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Delivery Trends Chart</h3>
+                        <p>Chart showing delivery trends over time</p>
+                        <p>Integration with Chart.js would go here</p>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <h2 class="section-title">Revenue Analysis</h2>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Revenue Analysis Chart</h3>
+                        <p>Chart showing revenue breakdown by service type</p>
+                        <p>Integration with Chart.js would go here</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Website Content Section -->
+            <div id="website-content-section" class="content-section" role="tabpanel" aria-labelledby="website-content-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Edit Website Content</h2>
+                </div>
+                
+                <div class="content-editor">
+                    <div class="editor-section">
+                        <h3>Content Items</h3>
+                        <ul class="content-list">
+                            <li class="content-item active" data-content="prices" tabindex="0" role="tab" aria-selected="true">
+                                <span>Prices</span>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </li>
+                            <li class="content-item" data-content="testimonials" tabindex="-1" role="tab" aria-selected="false">
+                                <span>Testimonials</span>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </li>
+                            <li class="content-item" data-content="services" tabindex="-1" role="tab" aria-selected="false">
+                                <span>Services</span>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </li>
+                            <li class="content-item" data-content="about" tabindex="-1" role="tab" aria-selected="false">
+                                <span>About Us</span>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </li>
+                            <li class="content-item" data-content="images" tabindex="-1" role="tab" aria-selected="false">
+                                <span>Images</span>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="editor-section">
+                        <!-- Prices Form -->
+                        <div class="content-form active" id="prices-form" role="tabpanel" aria-labelledby="prices-tab">
+                            <h3>Edit Prices</h3>
+                            <form id="pricesForm">
+                                <div class="form-group">
+                                    <label for="basePrice">Base Price (₦)</label>
+                                    <input type="number" id="basePrice" value="5000" aria-describedby="basePriceHelp">
+                                    <small id="basePriceHelp">The base price for all shipments</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="weightCharge">Weight Charge (₦ per kg)</label>
+                                    <input type="number" id="weightCharge" value="150" aria-describedby="weightChargeHelp">
+                                    <small id="weightChargeHelp">Additional charge per kilogram</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="volumeCharge">Volume Charge (₦ per m³)</label>
+                                    <input type="number" id="volumeCharge" value="8000" aria-describedby="volumeChargeHelp">
+                                    <small id="volumeChargeHelp">Additional charge per cubic meter</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="expressMultiplier">Express Multiplier</label>
+                                    <input type="number" id="expressMultiplier" value="1.8" step="0.1" aria-describedby="expressHelp">
+                                    <small id="expressHelp">Multiplier for express shipments</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="priorityMultiplier">Priority Multiplier</label>
+                                    <input type="number" id="priorityMultiplier" value="2.5" step="0.1" aria-describedby="priorityHelp">
+                                    <small id="priorityHelp">Multiplier for priority shipments</small>
+                                </div>
+                                
+                                <button type="submit" class="btn">Save Prices</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Testimonials Form -->
+                        <div class="content-form" id="testimonials-form" role="tabpanel" aria-labelledby="testimonials-tab">
+                            <h3>Edit Testimonials</h3>
+                            <div id="testimonialsList">
+                                <div class="form-group">
+                                    <label>Testimonial 1</label>
+                                    <textarea rows="3" class="testimonial-text" aria-label="Testimonial content">VelocityLog has transformed our supply chain operations. Their reliability and speed have helped us expand our business across West Africa with confidence.</textarea>
+                                    <input type="text" class="testimonial-author" placeholder="Author" value="Ahmed Ibrahim" aria-label="Testimonial author">
+                                    <input type="text" class="testimonial-position" placeholder="Position" value="CEO, TechNigeria Ltd" aria-label="Author position">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Testimonial 2</label>
+                                    <textarea rows="3" class="testimonial-text" aria-label="Testimonial content">The customer service at VelocityLog is exceptional. They go above and beyond to ensure our shipments arrive on time and in perfect condition.</textarea>
+                                    <input type="text" class="testimonial-author" placeholder="Author" value="Sarah Williams" aria-label="Testimonial author">
+                                    <input type="text" class="testimonial-position" placeholder="Position" value="Logistics Manager, Global Retail" aria-label="Author position">
+                                </div>
+                            </div>
+                            
+                            <button class="btn" id="addTestimonial" aria-label="Add testimonial">Add Testimonial</button>
+                            <button type="submit" class="btn" id="saveTestimonials" aria-label="Save testimonials">Save Testimonials</button>
+                        </div>
+                        
+                        <!-- Services Form -->
+                        <div class="content-form" id="services-form" role="tabpanel" aria-labelledby="services-tab">
+                            <h3>Edit Services</h3>
+                            <div id="servicesList">
+                                <div class="form-group">
+                                    <label>Service 1</label>
+                                    <input type="text" class="service-title" placeholder="Service Title" value="Ocean Freight" aria-label="Service title">
+                                    <textarea rows="2" class="service-description" placeholder="Service Description" aria-label="Service description">Cost-effective solutions for all your ocean freight needs with global coverage and real-time tracking.</textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Service 2</label>
+                                    <input type="text" class="service-title" placeholder="Service Title" value="Air Cargo" aria-label="Service title">
+                                    <textarea rows="2" class="service-description" placeholder="Service Description" aria-label="Service description">Priority air freight services for time-sensitive shipments with guaranteed transit times.</textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Service 3</label>
+                                    <input type="text" class="service-title" placeholder="Service Title" value="Ground Transport" aria-label="Service title">
+                                    <textarea rows="2" class="service-description" placeholder="Service Description" aria-label="Service description">Comprehensive road and rail solutions with temperature-controlled options available.</textarea>
+                                </div>
+                            </div>
+                            
+                            <button class="btn" id="addService" aria-label="Add service">Add Service</button>
+                            <button type="submit" class="btn" id="saveServices" aria-label="Save services">Save Services</button>
+                        </div>
+                        
+                        <!-- About Form -->
+                        <div class="content-form" id="about-form" role="tabpanel" aria-labelledby="about-tab">
+                            <h3>Edit About Us</h3>
+                            <form id="aboutForm">
+                                <div class="form-group">
+                                    <label for="aboutTitle">About Title</label>
+                                    <input type="text" id="aboutTitle" value="About VelocityLog" aria-label="About page title">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="aboutContent">About Content</label>
+                                    <textarea rows="10" id="aboutContent" aria-label="About page content">At VelocityLog, we believe every shipment tells a story. Founded on the principle that reliability is non-negotiable, we've built our business around one simple promise: to deliver your goods safely, on time, every time.
+With over 5 years of experience serving Nigeria's busiest routes, our team of seasoned drivers and dispatch specialists combines local know-how with advanced tracking technology. From Lagos to Abuja—and everywhere in between—we've perfected the art of seamless coordination so you can focus on what matters most: growing your business.
+We're more than a courier service. We're your logistics partner. That means:
+- Transparent tracking: Real-time updates so you never wonder where your packages are.
+- Dedicated support: 24/7 customer care, because questions don't always arrive between 9 and 5.
+- Data-driven efficiency: Optimized routes and performance analytics that save you time and money.
+Our mission is to empower businesses—big and small—to move with confidence. Whether you're sending a single parcel or coordinating nationwide deliveries, our custom solutions adapt to your needs and scale alongside your ambitions.</textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn">Save About Content</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Images Form -->
+                        <div class="content-form" id="images-form" role="tabpanel" aria-labelledby="images-tab">
+                            <h3>Edit Images</h3>
+                            <div class="form-group">
+                                <label for="heroImage">Hero Background Image</label>
+                                <input type="file" id="heroImage" accept="image/*" aria-describedby="heroImageHelp">
+                                <p id="heroImageHelp">Current: assets/watermarked_preview (1).mp4</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="logoImage">Logo</label>
+                                <input type="file" id="logoImage" accept="image/*" aria-describedby="logoImageHelp">
+                                <p id="logoImageHelp">Current: assets/logo.png</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="serviceIcons">Service Icons</label>
+                                <input type="file" id="serviceIcons" accept="image/*" multiple aria-describedby="serviceIconsHelp">
+                                <p id="serviceIconsHelp">Current: Font Awesome icons</p>
+                            </div>
+                            
+                            <button type="submit" class="btn" id="saveImages" aria-label="Save images">Save Images</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div id="settings-section" class="content-section" role="tabpanel" aria-labelledby="settings-tab" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">System Settings</h2>
+                </div>
+                
+                <form id="settingsForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="siteName">Site Name</label>
+                            <input type="text" id="siteName" value="VelocityLog" aria-describedby="siteNameHelp">
+                            <small id="siteNameHelp">The name of your website</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adminEmail">Admin Email</label>
+                            <input type="email" id="adminEmail" value="admin@velocitylog.ng" aria-describedby="adminEmailHelp">
+                            <small id="adminEmailHelp">Email for system notifications</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="currency">Default Currency</label>
+                            <select id="currency" aria-describedby="currencyHelp">
+                                <option value="NGN">Nigerian Naira (₦)</option>
+                                <option value="USD">US Dollar ($)</option>
+                                <option value="EUR">Euro (€)</option>
+                            </select>
+                            <small id="currencyHelp">Default currency for all transactions</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taxRate">Tax Rate (%)</label>
+                            <input type="number" id="taxRate" value="7.5" step="0.1" aria-describedby="taxRateHelp">
+                            <small id="taxRateHelp">Tax rate applied to all transactions</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supportPhone">Support Phone</label>
+                            <input type="text" id="supportPhone" value="+234 (0) 812 345 6789" aria-describedby="supportPhoneHelp">
+                            <small id="supportPhoneHelp">Phone number for customer support</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supportEmail">Support Email</label>
+                            <input type="email" id="supportEmail" value="info@velocitylog.ng" aria-describedby="supportEmailHelp">
+                            <small id="supportEmailHelp">Email for customer support</small>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Save Settings</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Add Shipment Modal -->
+    <div class="modal" id="addShipmentModal" role="dialog" aria-labelledby="shipmentModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="shipmentModalTitle">Add New Shipment</h3>
+                <button class="close-modal" id="closeShipmentModal" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="addShipmentForm">
+                <div class="form-group">
+                    <label for="shipmentCustomer">Customer</label>
+                    <select id="shipmentCustomer" required aria-describedby="customerHelp">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <small id="customerHelp">Select a customer for this shipment</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipmentOrigin">Origin</label>
+                    <input type="text" id="shipmentOrigin" required aria-describedby="originHelp">
+                    <small id="originHelp">Starting location of the shipment</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipmentDestination">Destination</label>
+                    <input type="text" id="shipmentDestination" required aria-describedby="destinationHelp">
+                    <small id="destinationHelp">Final destination of the shipment</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipmentWeight">Weight (kg)</label>
+                    <input type="number" id="shipmentWeight" required aria-describedby="weightHelp">
+                    <small id="weightHelp">Weight of the shipment in kilograms</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipmentDriver">Assign Driver</label>
+                    <select id="shipmentDriver" required aria-describedby="driverHelp">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <small id="driverHelp">Select a driver for this shipment</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipmentStatus">Status</label>
+                    <select id="shipmentStatus" required aria-describedby="statusHelp">
+                        <option value="pending">Pending</option>
+                        <option value="in-transit">In Transit</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="delayed">Delayed</option>
+                    </select>
+                    <small id="statusHelp">Current status of the shipment</small>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Add Shipment</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Driver Modal -->
+    <div class="modal" id="addDriverModal" role="dialog" aria-labelledby="driverModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="driverModalTitle">Add New Driver</h3>
+                <button class="close-modal" id="closeDriverModal" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="addDriverForm">
+                <div class="form-group">
+                    <label for="driverName">Full Name</label>
+                    <input type="text" id="driverName" required aria-describedby="driverNameHelp">
+                    <small id="driverNameHelp">Driver's full legal name</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="driverPhone">Phone Number</label>
+                    <input type="tel" id="driverPhone" required aria-describedby="driverPhoneHelp">
+                    <small id="driverPhoneHelp">Driver's contact phone number</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="driverLicense">License Number</label>
+                    <input type="text" id="driverLicense" required aria-describedby="driverLicenseHelp">
+                    <small id="driverLicenseHelp">Driver's license number</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="driverAddress">Address</label>
+                    <textarea id="driverAddress" rows="3" required aria-describedby="driverAddressHelp"></textarea>
+                    <small id="driverAddressHelp">Driver's residential address</small>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Add Driver</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Client Modal -->
+    <div class="modal" id="addClientModal" role="dialog" aria-labelledby="clientModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="clientModalTitle">Add New Client</h3>
+                <button class="close-modal" id="closeClientModal" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="addClientForm">
+                <div class="form-group">
+                    <label for="clientName">Full Name</label>
+                    <input type="text" id="clientName" required aria-describedby="clientNameHelp">
+                    <small id="clientNameHelp">Client's full name</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientEmail">Email Address</label>
+                    <input type="email" id="clientEmail" required aria-describedby="clientEmailHelp">
+                    <small id="clientEmailHelp">Client's email address</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientPhone">Phone Number</label>
+                    <input type="tel" id="clientPhone" required aria-describedby="clientPhoneHelp">
+                    <small id="clientPhoneHelp">Client's phone number</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientCompany">Company</label>
+                    <input type="text" id="clientCompany" aria-describedby="clientCompanyHelp">
+                    <small id="clientCompanyHelp">Client's company name (optional)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientAddress">Address</label>
+                    <textarea id="clientAddress" rows="3" required aria-describedby="clientAddressHelp"></textarea>
+                    <small id="clientAddressHelp">Client's address</small>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Add Client</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notificationToast" role="alert" aria-live="assertive">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+    
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+        
+        // Sample admin user data
+        const adminUser = {
+            name: 'Admin User',
+            email: 'admin@velocitylog.ng',
+            role: 'Administrator'
+        };
+        
+        // Initialize admin dashboard
+        function initAdminDashboard() {
+            // Update admin info
+            document.getElementById('adminName').textContent = adminUser.name;
+            document.getElementById('adminNameHeader').textContent = adminUser.name;
+            document.getElementById('adminAvatar').textContent = adminUser.name.charAt(0).toUpperCase();
+            
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Check for admin authentication
+            checkAdminAuthentication();
+        }
+        
+        // Check admin authentication
+        function checkAdminAuthentication() {
+            const currentUser = localStorage.getItem('velocitylog_currentUser');
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'admin') {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+        }
+        
+        // Sample data
+        const adminData = {
+            shipments: [
+                { id: 'VL123456', customer: 'John Doe', origin: 'Lagos', destination: 'Abuja', driver: 'Ahmed Ibrahim', status: 'in-transit', date: '2023-10-18' },
+                { id: 'VL789012', customer: 'Jane Smith', origin: 'Port Harcourt', destination: 'Kano', driver: 'Musa Abdullahi', status: 'delivered', date: '2023-10-17' },
+                { id: 'VL345678', customer: 'Robert Johnson', origin: 'Abuja', destination: 'Enugu', driver: 'Chukwuemeka Okafor', status: 'pending', date: '2023-10-18' },
+                { id: 'VL901234', customer: 'Sarah Williams', origin: 'Kano', destination: 'Lagos', driver: 'Ibrahim Bello', status: 'delayed', date: '2023-10-16' },
+                { id: 'VL567890', customer: 'Michael Brown', origin: 'Enugu', destination: 'Port Harcourt', driver: 'Tunde Adekunle', status: 'in-transit', date: '2023-10-18' },
+                { id: 'VL234567', customer: 'Emily Davis', origin: 'Lagos', destination: 'Ibadan', driver: 'Ahmed Ibrahim', status: 'delivered', date: '2023-10-17' },
+                { id: 'VL678901', customer: 'David Wilson', origin: 'Ibadan', destination: 'Benin City', driver: 'Musa Abdullahi', status: 'in-transit', date: '2023-10-18' },
+                { id: 'VL012345', customer: 'Jennifer Martinez', origin: 'Benin City', destination: 'Calabar', driver: 'Chukwuemeka Okafor', status: 'pending', date: '2023-10-18' }
+            ],
+            drivers: [
+                { id: 'DR001', name: 'Ahmed Ibrahim', phone: '08012345678', license: 'DRV-12345', status: 'active', activeShipments: 2 },
+                { id: 'DR002', name: 'Musa Abdullahi', phone: '08023456789', license: 'DRV-23456', status: 'active', activeShipments: 2 },
+                { id: 'DR003', name: 'Chukwuemeka Okafor', phone: '08034567890', license: 'DRV-34567', status: 'active', activeShipments: 1 },
+                { id: 'DR004', name: 'Ibrahim Bello', phone: '08045678901', license: 'DRV-45678', status: 'active', activeShipments: 1 },
+                { id: 'DR005', name: 'Tunde Adekunle', phone: '08056789012', license: 'DRV-56789', status: 'active', activeShipments: 1 },
+                { id: 'DR006', name: 'James Okoro', phone: '08067890123', license: 'DRV-67890', status: 'inactive', activeShipments: 0 },
+                { id: 'DR007', name: 'Peter Eze', phone: '08078901234', license: 'DRV-78901', status: 'active', activeShipments: 1 },
+                { id: 'DR008', name: 'Samuel Adeyemi', phone: '08089012345', license: 'DRV-89012', status: 'active', activeShipments: 1 },
+                { id: 'DR009', name: 'Joseph Nwosu', phone: '08090123456', license: 'DRV-90123', status: 'active', activeShipments: 1 },
+                { id: 'DR010', name: 'Daniel Okafor', phone: '08001234567', license: 'DRV-01234', status: 'inactive', activeShipments: 0 },
+                { id: 'DR011', name: 'Paul Adebayo', phone: '08012345678', license: 'DRV-12345', status: 'active', activeShipments: 1 },
+                { id: 'DR012', name: 'Matthew Ibrahim', phone: '08023456789', license: 'DRV-23456', status: 'active', activeShipments: 1 }
+            ],
+            clients: [
+                { id: 'CL001', name: 'John Doe', email: 'john@example.com', phone: '08012345678', company: 'TechNigeria Ltd', totalShipments: 15 },
+                { id: 'CL002', name: 'Jane Smith', email: 'jane@example.com', phone: '08023456789', company: 'Global Retail', totalShipments: 22 },
+                { id: 'CL003', name: 'Robert Johnson', email: 'robert@example.com', phone: '08034567890', company: 'Johnson Industries', totalShipments: 8 },
+                { id: 'CL004', name: 'Sarah Williams', email: 'sarah@example.com', phone: '08045678901', company: 'Williams & Co', totalShipments: 18 },
+                { id: 'CL005', name: 'Michael Brown', email: 'michael@example.com', phone: '08056789012', company: 'Brown Logistics', totalShipments: 12 },
+                { id: 'CL006', name: 'Emily Davis', email: 'emily@example.com', phone: '08067890123', company: 'Davis Enterprises', totalShipments: 5 },
+                { id: 'CL007', name: 'David Wilson', email: 'david@example.com', phone: '08078901234', company: 'Wilson Trading', totalShipments: 9 },
+                { id: 'CL008', name: 'Jennifer Martinez', email: 'jennifer@example.com', phone: '08089012345', company: 'Martinez Corp', totalShipments: 14 }
+            ],
+            payments: [
+                { id: 'PAY001', customer: 'John Doe', amount: 45000, method: 'Bank Transfer', status: 'received', date: '2023-10-18' },
+                { id: 'PAY002', customer: 'Jane Smith', amount: 78000, method: 'Cash', status: 'received', date: '2023-10-18' },
+                { id: 'PAY003', customer: 'Robert Johnson', amount: 32000, method: 'Bank Transfer', status: 'pending', date: '2023-10-18' },
+                { id: 'PAY004', customer: 'Sarah Williams', amount: 55000, method: 'Cash on Delivery', status: 'pending', date: '2023-10-17' },
+                { id: 'PAY005', customer: 'Michael Brown', amount: 67000, method: 'Bank Transfer', status: 'failed', date: '2023-10-17' },
+                { id: 'PAY006', customer: 'Emily Davis', amount: 43000, method: 'Cash', status: 'received', date: '2023-10-17' },
+                { id: 'PAY007', customer: 'David Wilson', amount: 89000, method: 'Bank Transfer', status: 'received', date: '2023-10-16' },
+                { id: 'PAY008', customer: 'Jennifer Martinez', amount: 56000, method: 'Cash on Delivery', status: 'pending', date: '2023-10-16' }
+            ]
+        };
+        
+        // Load dashboard data
+        function loadDashboardData() {
+            // Update dashboard cards
+            updateDashboardCards();
+            
+            // Update tables
+            updateRecentShipmentsTable();
+            updateAllShipmentsTable();
+            updateDriversTable();
+            updateClientsTable();
+            updatePaymentsTable();
+            
+            // Update driver grid
+            updateActiveDriversGrid();
+            
+            // Update notification badge
+            updateNotificationBadge();
+        }
+        
+        // Update notification badge
+        function updateNotificationBadge() {
+            // Calculate pending shipments
+            const pendingShipments = adminData.shipments.filter(s => s.status === 'pending').length;
+            
+            // Calculate pending payments
+            const pendingPayments = adminData.payments.filter(p => p.status === 'pending').length;
+            
+            // Calculate delayed shipments
+            const delayedShipments = adminData.shipments.filter(s => s.status === 'delayed').length;
+            
+            // Update badge
+            const totalNotifications = pendingShipments + pendingPayments + delayedShipments;
+            document.getElementById('notification-count').textContent = totalNotifications;
+        }
+        
+        // Update dashboard cards
+        function updateDashboardCards() {
+            // Calculate active shipments
+            const activeShipments = adminData.shipments.filter(s => s.status === 'in-transit').length;
+            document.getElementById('activeShipments').textContent = activeShipments;
+            
+            // Calculate delivered today
+            const today = new Date().toISOString().split('T')[0];
+            const deliveredToday = adminData.shipments.filter(s => s.status === 'delivered' && s.date === today).length;
+            document.getElementById('deliveredToday').textContent = deliveredToday;
+            
+            // Calculate delayed shipments
+            const delayedShipments = adminData.shipments.filter(s => s.status === 'delayed').length;
+            document.getElementById('delayedShipments').textContent = delayedShipments;
+            
+            // Calculate active drivers
+            const activeDrivers = adminData.drivers.filter(d => d.status === 'active').length;
+            document.getElementById('activeDrivers').textContent = activeDrivers;
+            
+            // Calculate revenue today
+            const revenueToday = adminData.payments
+                .filter(p => p.status === 'received' && p.date === today)
+                .reduce((sum, p) => sum + p.amount, 0);
+            document.getElementById('revenueToday').textContent = `₦${revenueToday.toLocaleString()}`;
+            
+            // Calculate fuel cost (simplified)
+            const fuelCost = Math.floor(revenueToday * 0.15);
+            document.getElementById('fuelCost').textContent = `₦${fuelCost.toLocaleString()}`;
+        }
+        
+        // Update recent shipments table
+        function updateRecentShipmentsTable() {
+            const tbody = document.getElementById('recentShipmentsTable');
+            tbody.innerHTML = '';
+            
+            // Show only first 5 shipments
+            const recentShipments = adminData.shipments.slice(0, 5);
+            
+            recentShipments.forEach(shipment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${shipment.id}</td>
+                    <td>${shipment.customer}</td>
+                    <td>${shipment.origin}</td>
+                    <td>${shipment.destination}</td>
+                    <td>${shipment.driver}</td>
+                    <td><span class="status-badge ${shipment.status}">${shipment.status.replace('-', ' ')}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-outline" onclick="viewShipment('${shipment.id}')" aria-label="View shipment ${shipment.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="editShipment('${shipment.id}')" aria-label="Edit shipment ${shipment.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update all shipments table
+        function updateAllShipmentsTable() {
+            const tbody = document.getElementById('allShipmentsTable');
+            tbody.innerHTML = '';
+            
+            adminData.shipments.forEach(shipment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${shipment.id}</td>
+                    <td>${shipment.customer}</td>
+                    <td>${shipment.origin}</td>
+                    <td>${shipment.destination}</td>
+                    <td>${shipment.driver}</td>
+                    <td><span class="status-badge ${shipment.status}">${shipment.status.replace('-', ' ')}</span></td>
+                    <td>${shipment.date}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-outline" onclick="viewShipment('${shipment.id}')" aria-label="View shipment ${shipment.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="editShipment('${shipment.id}')" aria-label="Edit shipment ${shipment.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="deleteShipment('${shipment.id}')" aria-label="Delete shipment ${shipment.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update drivers table
+        function updateDriversTable() {
+            const tbody = document.getElementById('driversTable');
+            tbody.innerHTML = '';
+            
+            adminData.drivers.forEach(driver => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${driver.id}</td>
+                    <td>${driver.name}</td>
+                    <td>${driver.phone}</td>
+                    <td>${driver.license}</td>
+                    <td><span class="status-badge ${driver.status}">${driver.status}</span></td>
+                    <td>${driver.activeShipments}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-outline" onclick="viewDriver('${driver.id}')" aria-label="View driver ${driver.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="editDriver('${driver.id}')" aria-label="Edit driver ${driver.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="toggleDriverStatus('${driver.id}')" aria-label="Toggle driver ${driver.id} status">
+                                <i class="fas fa-toggle-on"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update clients table
+        function updateClientsTable() {
+            const tbody = document.getElementById('clientsTable');
+            tbody.innerHTML = '';
+            
+            adminData.clients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.id}</td>
+                    <td>${client.name}</td>
+                    <td>${client.email}</td>
+                    <td>${client.phone}</td>
+                    <td>${client.company}</td>
+                    <td>${client.totalShipments}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-outline" onclick="viewClient('${client.id}')" aria-label="View client ${client.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="editClient('${client.id}')" aria-label="Edit client ${client.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="deleteClient('${client.id}')" aria-label="Delete client ${client.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update payments table
+        function updatePaymentsTable() {
+            const tbody = document.getElementById('paymentsTable');
+            tbody.innerHTML = '';
+            
+            adminData.payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.id}</td>
+                    <td>${payment.customer}</td>
+                    <td>₦${payment.amount.toLocaleString()}</td>
+                    <td>${payment.method}</td>
+                    <td><span class="status-badge ${payment.status}">${payment.status}</span></td>
+                    <td>${payment.date}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-outline" onclick="viewPayment('${payment.id}')" aria-label="View payment ${payment.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-small" onclick="updatePaymentStatus('${payment.id}')" aria-label="Update payment ${payment.id} status">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update active drivers grid
+        function updateActiveDriversGrid() {
+            const grid = document.getElementById('activeDriversGrid');
+            grid.innerHTML = '';
+            
+            // Show only active drivers
+            const activeDrivers = adminData.drivers.filter(d => d.status === 'active');
+            
+            activeDrivers.forEach(driver => {
+                const driverCard = document.createElement('div');
+                driverCard.className = 'driver-card';
+                driverCard.innerHTML = `
+                    <div class="driver-header">
+                        <div class="driver-avatar">${driver.name.charAt(0)}</div>
+                        <div class="driver-info">
+                            <h4>${driver.name}</h4>
+                            <p>${driver.phone}</p>
+                        </div>
+                    </div>
+                    <div class="driver-stats">
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">${driver.activeShipments}</div>
+                            <div class="driver-stat-label">Active Shipments</div>
+                        </div>
+                        <div class="driver-stat">
+                            <div class="driver-stat-value">${Math.floor(Math.random() * 20) + 5}</div>
+                            <div class="driver-stat-label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="driver-actions">
+                        <button class="btn btn-small btn-outline" onclick="viewDriver('${driver.id}')" aria-label="View driver ${driver.id}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-small" onclick="contactDriver('${driver.id}')" aria-label="Contact driver ${driver.id}">
+                            <i class="fas fa-phone"></i> Call
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(driverCard);
+            });
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Mobile sidebar toggle
+            const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            mobileSidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mainContent.classList.toggle('expanded');
+                
+                // Update aria-expanded
+                const isExpanded = sidebar.classList.contains('active');
+                mobileSidebarToggle.setAttribute('aria-expanded', isExpanded);
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 992 && 
+                    sidebar.classList.contains('active') && 
+                    !sidebar.contains(event.target) && 
+                    !mobileSidebarToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                    mainContent.classList.remove('expanded');
+                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Menu navigation
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all items
+                    menuItems.forEach(mi => {
+                        mi.classList.remove('active');
+                        mi.setAttribute('aria-selected', 'false');
+                        mi.setAttribute('tabindex', '-1');
+                    });
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    this.setAttribute('tabindex', '0');
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show selected section
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.style.display = 'block';
+                    }
+                    
+                    // Close mobile sidebar
+                    sidebar.classList.remove('active');
+                    mainContent.classList.remove('expanded');
+                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
+                });
+                
+                // Keyboard navigation
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            // Refresh data
+            document.getElementById('refreshData').addEventListener('click', function() {
+                showNotification('Data refreshed successfully', 'success');
+                loadDashboardData();
+            });
+            
+            // View all shipments
+            document.getElementById('viewAllShipments').addEventListener('click', function() {
+                // Trigger menu item click
+                document.querySelector('[data-section="shipments"]').click();
+            });
+            
+            // Add shipment
+            const addShipmentBtn = document.getElementById('addShipmentBtn');
+            const addShipmentModal = document.getElementById('addShipmentModal');
+            const closeShipmentModal = document.getElementById('closeShipmentModal');
+            const addShipmentForm = document.getElementById('addShipmentForm');
+            
+            addShipmentBtn.addEventListener('click', function() {
+                addShipmentModal.classList.add('show');
+                addShipmentModal.setAttribute('aria-hidden', 'false');
+                populateShipmentForm();
+            });
+            
+            closeShipmentModal.addEventListener('click', function() {
+                addShipmentModal.classList.remove('show');
+                addShipmentModal.setAttribute('aria-hidden', 'true');
+            });
+            
+            // Close modal when clicking outside
+            addShipmentModal.addEventListener('click', function(e) {
+                if (e.target === addShipmentModal) {
+                    addShipmentModal.classList.remove('show');
+                    addShipmentModal.setAttribute('aria-hidden', 'true');
+                }
+            });
+            
+            addShipmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const customer = document.getElementById('shipmentCustomer').value;
+                const origin = document.getElementById('shipmentOrigin').value;
+                const destination = document.getElementById('shipmentDestination').value;
+                const weight = document.getElementById('shipmentWeight').value;
+                const driver = document.getElementById('shipmentDriver').value;
+                const status = document.getElementById('shipmentStatus').value;
+                
+                // Create new shipment
+                const newShipment = {
+                    id: 'VL' + Date.now(),
+                    customer,
+                    origin,
+                    destination,
+                    driver,
+                    status,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                // Add to data
+                adminData.shipments.push(newShipment);
+                
+                // Update driver's active shipments count
+                const driverObj = adminData.drivers.find(d => d.name === driver);
+                if (driverObj) {
+                    driverObj.activeShipments += 1;
+                }
+                
+                // Close modal and reload data
+                addShipmentModal.classList.remove('show');
+                addShipmentModal.setAttribute('aria-hidden', 'true');
+                loadDashboardData();
+                
+                // Reset form
+                addShipmentForm.reset();
+                
+                showNotification('Shipment added successfully', 'success');
+            });
+            
+            // Add driver
+            const addDriverBtn = document.getElementById('addDriverBtn');
+            const addDriverModal = document.getElementById('addDriverModal');
+            const closeDriverModal = document.getElementById('closeDriverModal');
+            const addDriverForm = document.getElementById('addDriverForm');
+            
+            addDriverBtn.addEventListener('click', function() {
+                addDriverModal.classList.add('show');
+                addDriverModal.setAttribute('aria-hidden', 'false');
+            });
+            
+            closeDriverModal.addEventListener('click', function() {
+                addDriverModal.classList.remove('show');
+                addDriverModal.setAttribute('aria-hidden', 'true');
+            });
+            
+            // Close modal when clicking outside
+            addDriverModal.addEventListener('click', function(e) {
+                if (e.target === addDriverModal) {
+                    addDriverModal.classList.remove('show');
+                    addDriverModal.setAttribute('aria-hidden', 'true');
+                }
+            });
+            
+            addDriverForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('driverName').value;
+                const phone = document.getElementById('driverPhone').value;
+                const license = document.getElementById('driverLicense').value;
+                const address = document.getElementById('driverAddress').value;
+                
+                // Create new driver
+                const newDriver = {
+                    id: 'DR' + String(adminData.drivers.length + 1).padStart(3, '0'),
+                    name,
+                    phone,
+                    license,
+                    address,
+                    status: 'active',
+                    activeShipments: 0
+                };
+                
+                // Add to data
+                adminData.drivers.push(newDriver);
+                
+                // Close modal and reload data
+                addDriverModal.classList.remove('show');
+                addDriverModal.setAttribute('aria-hidden', 'true');
+                loadDashboardData();
+                
+                // Reset form
+                addDriverForm.reset();
+                
+                showNotification('Driver added successfully', 'success');
+            });
+            
+            // Add client
+            const addClientBtn = document.getElementById('addClientBtn');
+            const addClientModal = document.getElementById('addClientModal');
+            const closeClientModal = document.getElementById('closeClientModal');
+            const addClientForm = document.getElementById('addClientForm');
+            
+            addClientBtn.addEventListener('click', function() {
+                addClientModal.classList.add('show');
+                addClientModal.setAttribute('aria-hidden', 'false');
+            });
+            
+            closeClientModal.addEventListener('click', function() {
+                addClientModal.classList.remove('show');
+                addClientModal.setAttribute('aria-hidden', 'true');
+            });
+            
+            // Close modal when clicking outside
+            addClientModal.addEventListener('click', function(e) {
+                if (e.target === addClientModal) {
+                    addClientModal.classList.remove('show');
+                    addClientModal.setAttribute('aria-hidden', 'true');
+                }
+            });
+            
+            addClientForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('clientName').value;
+                const email = document.getElementById('clientEmail').value;
+                const phone = document.getElementById('clientPhone').value;
+                const company = document.getElementById('clientCompany').value;
+                const address = document.getElementById('clientAddress').value;
+                
+                // Create new client
+                const newClient = {
+                    id: 'CL' + String(adminData.clients.length + 1).padStart(3, '0'),
+                    name,
+                    email,
+                    phone,
+                    company,
+                    totalShipments: 0
+                };
+                
+                // Add to data
+                adminData.clients.push(newClient);
+                
+                // Close modal and reload data
+                addClientModal.classList.remove('show');
+                addClientModal.setAttribute('aria-hidden', 'true');
+                loadDashboardData();
+                
+                // Reset form
+                addClientForm.reset();
+                
+                showNotification('Client added successfully', 'success');
+            });
+            
+            // Export shipments
+            document.getElementById('exportShipments').addEventListener('click', function() {
+                showNotification('Shipments exported successfully', 'success');
+            });
+            
+            // Export payments
+            document.getElementById('exportPayments').addEventListener('click', function() {
+                showNotification('Payments exported successfully', 'success');
+            });
+            
+            // Refresh map
+            document.getElementById('refreshMap').addEventListener('click', function() {
+                showNotification('Map refreshed successfully', 'success');
+            });
+            
+            // Analytics period change
+            document.getElementById('analyticsPeriod').addEventListener('change', function() {
+                updateAnalyticsData(this.value);
+            });
+            
+            // Export analytics
+            document.getElementById('exportAnalytics').addEventListener('click', function() {
+                showNotification('Analytics exported successfully', 'success');
+            });
+            
+            // Content editor
+            const contentItems = document.querySelectorAll('.content-item');
+            contentItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    contentItems.forEach(ci => {
+                        ci.classList.remove('active');
+                        ci.setAttribute('aria-selected', 'false');
+                        ci.setAttribute('tabindex', '-1');
+                    });
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    this.setAttribute('tabindex', '0');
+                    
+                    // Hide all forms
+                    document.querySelectorAll('.content-form').forEach(form => {
+                        form.classList.remove('active');
+                    });
+                    
+                    // Show selected form
+                    const contentType = this.getAttribute('data-content');
+                    const form = document.getElementById(contentType + '-form');
+                    if (form) {
+                        form.classList.add('active');
+                    }
+                });
+                
+                // Keyboard navigation
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+            
+            // Prices form
+            document.getElementById('pricesForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('Prices saved successfully', 'success');
+            });
+            
+            // Add testimonial
+            document.getElementById('addTestimonial').addEventListener('click', function() {
+                const testimonialsList = document.getElementById('testimonialsList');
+                const newTestimonial = document.createElement('div');
+                newTestimonial.className = 'form-group';
+                newTestimonial.innerHTML = `
+                    <label>Testimonial ${testimonialsList.children.length + 1}</label>
+                    <textarea rows="3" class="testimonial-text" aria-label="Testimonial content"></textarea>
+                    <input type="text" class="testimonial-author" placeholder="Author" aria-label="Testimonial author">
+                    <input type="text" class="testimonial-position" placeholder="Position" aria-label="Author position">
+                `;
+                testimonialsList.appendChild(newTestimonial);
+            });
+            
+            // Save testimonials
+            document.getElementById('saveTestimonials').addEventListener('click', function() {
+                showNotification('Testimonials saved successfully', 'success');
+            });
+            
+            // Add service
+            document.getElementById('addService').addEventListener('click', function() {
+                const servicesList = document.getElementById('servicesList');
+                const newService = document.createElement('div');
+                newService.className = 'form-group';
+                newService.innerHTML = `
+                    <label>Service ${servicesList.children.length + 1}</label>
+                    <input type="text" class="service-title" placeholder="Service Title" aria-label="Service title">
+                    <textarea rows="2" class="service-description" placeholder="Service Description" aria-label="Service description"></textarea>
+                `;
+                servicesList.appendChild(newService);
+            });
+            
+            // Save services
+            document.getElementById('saveServices').addEventListener('click', function() {
+                showNotification('Services saved successfully', 'success');
+            });
+            
+            // About form
+            document.getElementById('aboutForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('About content saved successfully', 'success');
+            });
+            
+            // Save images
+            document.getElementById('saveImages').addEventListener('click', function() {
+                showNotification('Images saved successfully', 'success');
+            });
+            
+            // Settings form
+            document.getElementById('settingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('Settings saved successfully', 'success');
+            });
+            
+            // Dashboard card click handlers
+            const dashboardCards = document.querySelectorAll('.dashboard-card');
+            dashboardCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cardTitle = this.querySelector('.card-title').textContent;
+                    showNotification(`Viewing details for ${cardTitle}`, 'info');
+                });
+                
+                // Keyboard navigation
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+            
+            // Notification icon click
+            const notificationIcon = document.querySelector('.notification-icon');
+            notificationIcon.addEventListener('click', function() {
+                showNotification('You have 3 new notifications', 'info');
+            });
+            
+            // Keyboard navigation for notification icon
+            notificationIcon.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        }
+        
+        // Populate shipment form
+        function populateShipmentForm() {
+            const customerSelect = document.getElementById('shipmentCustomer');
+            const driverSelect = document.getElementById('shipmentDriver');
+            
+            // Clear existing options
+            customerSelect.innerHTML = '';
+            driverSelect.innerHTML = '';
+            
+            // Add customer options
+            adminData.clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.name;
+                option.textContent = `${client.name} (${client.company})`;
+                customerSelect.appendChild(option);
+            });
+            
+            // Add driver options (only active drivers)
+            adminData.drivers
+                .filter(driver => driver.status === 'active')
+                .forEach(driver => {
+                    const option = document.createElement('option');
+                    option.value = driver.name;
+                    option.textContent = driver.name;
+                    driverSelect.appendChild(option);
+                });
+        }
+        
+        // Update analytics data based on period
+        function updateAnalyticsData(period) {
+            // In a real application, this would fetch data based on the selected period
+            // For this demo, we'll just show a notification
+            showNotification(`Analytics updated for ${period}`, 'info');
+            
+            // Update some values based on period
+            let multiplier = 1;
+            
+            switch(period) {
+                case 'today':
+                    multiplier = 1;
+                    break;
+                case 'week':
+                    multiplier = 7;
+                    break;
+                case 'month':
+                    multiplier = 30;
+                    break;
+                case 'year':
+                    multiplier = 365;
+                    break;
+            }
+            
+            document.getElementById('dailyDeliveries').textContent = Math.floor(Math.random() * 50 * multiplier) + 50;
+            document.getElementById('monthlyCOD').textContent = `₦${(Math.floor(Math.random() * 5000000 * multiplier) + 1000000).toLocaleString()}`;
+            document.getElementById('lateDeliveries').textContent = Math.floor(Math.random() * 10 * multiplier) + 5;
+            document.getElementById('monthlyFuel').textContent = `₦${(Math.floor(Math.random() * 3000000 * multiplier) + 500000).toLocaleString()}`;
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notificationToast');
+            const notificationText = document.getElementById('notificationText');
+            const notificationIcon = notification.querySelector('i');
+            
+            // Update notification icon based on type
+            notificationIcon.className = '';
+            
+            if (type === 'success') {
+                notificationIcon.classList.add('fas', 'fa-check-circle');
+            } else if (type === 'error') {
+                notificationIcon.classList.add('fas', 'fa-exclamation-circle');
+            } else if (type === 'info') {
+                notificationIcon.classList.add('fas', 'fa-info-circle');
+            } else if (type === 'warning') {
+                notificationIcon.classList.add('fas', 'fa-exclamation-triangle');
+            }
+            
+            notificationText.textContent = message;
+            notification.className = `notification-toast show ${type}`;
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // View shipment (placeholder)
+        function viewShipment(id) {
+            showNotification(`Viewing shipment: ${id}`, 'info');
+        }
+        
+        // Edit shipment (placeholder)
+        function editShipment(id) {
+            showNotification(`Editing shipment: ${id}`, 'info');
+        }
+        
+        // Delete shipment
+        function deleteShipment(id) {
+            if (confirm('Are you sure you want to delete this shipment?')) {
+                // Find and remove shipment
+                const index = adminData.shipments.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    const shipment = adminData.shipments[index];
+                    
+                    // Update driver's active shipments count
+                    const driver = adminData.drivers.find(d => d.name === shipment.driver);
+                    if (driver && driver.activeShipments > 0) {
+                        driver.activeShipments -= 1;
+                    }
+                    
+                    adminData.shipments.splice(index, 1);
+                    
+                    // Reload data
+                    loadDashboardData();
+                    
+                    showNotification('Shipment deleted successfully', 'success');
+                }
+            }
+        }
+        
+        // View driver (placeholder)
+        function viewDriver(id) {
+            showNotification(`Viewing driver: ${id}`, 'info');
+        }
+        
+        // Edit driver (placeholder)
+        function editDriver(id) {
+            showNotification(`Editing driver: ${id}`, 'info');
+        }
+        
+        // Toggle driver status
+        function toggleDriverStatus(id) {
+            const driver = adminData.drivers.find(d => d.id === id);
+            if (driver) {
+                driver.status = driver.status === 'active' ? 'inactive' : 'active';
+                
+                // If deactivating, reset active shipments
+                if (driver.status === 'inactive') {
+                    driver.activeShipments = 0;
+                }
+                
+                // Reload data
+                loadDashboardData();
+                
+                showNotification(`Driver status updated to ${driver.status}`, 'success');
+            }
+        }
+        
+        // Contact driver (placeholder)
+        function contactDriver(id) {
+            const driver = adminData.drivers.find(d => d.id === id);
+            if (driver) {
+                showNotification(`Calling ${driver.name} at ${driver.phone}`, 'info');
+            }
+        }
+        
+        // View client (placeholder)
+        function viewClient(id) {
+            showNotification(`Viewing client: ${id}`, 'info');
+        }
+        
+        // Edit client (placeholder)
+        function editClient(id) {
+            showNotification(`Editing client: ${id}`, 'info');
+        }
+        
+        // Delete client
+        function deleteClient(id) {
+            if (confirm('Are you sure you want to delete this client?')) {
+                // Find and remove client
+                const index = adminData.clients.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    adminData.clients.splice(index, 1);
+                    
+                    // Reload data
+                    loadDashboardData();
+                    
+                    showNotification('Client deleted successfully', 'success');
+                }
+            }
+        }
+        
+        // View payment (placeholder)
+        function viewPayment(id) {
+            showNotification(`Viewing payment: ${id}`, 'info');
+        }
+        
+        // Update payment status
+        function updatePaymentStatus(id) {
+            const payment = adminData.payments.find(p => p.id === id);
+            if (payment) {
+                // Cycle through statuses
+                const statuses = ['pending', 'received', 'failed'];
+                const currentIndex = statuses.indexOf(payment.status);
+                const nextIndex = (currentIndex + 1) % statuses.length;
+                payment.status = statuses[nextIndex];
+                
+                // Reload data
+                loadDashboardData();
+                
+                showNotification(`Payment status updated to ${payment.status}`, 'success');
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('velocitylog_currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initAdminDashboard);
+    </script>
+</body>
+</html>

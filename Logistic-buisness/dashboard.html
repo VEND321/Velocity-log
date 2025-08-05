@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VelocityLog User Dashboard - Track your shipments, manage orders, and communicate with our support team.">
+    <title>User Dashboard | VelocityLog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary: #FF3E00;
+            --secondary: #ffffff;
+            --accent: #FF7B54;
+            --dark: #1a1a1a;
+            --light: #f5f7fa;
+            --light-gray: #eef2f5;
+            --dark-gray: #6c757d;
+            --border-radius: 10px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--light-gray);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        button, .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover, .btn:hover {
+            background: #e03500;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 62, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 62, 0, 0.1);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .preloader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .delivery-truck {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 4px;
+            animation: loading 2s forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .loading-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* User Dashboard Specific Styles */
+        .user-dashboard {
+            display: flex;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .user-dashboard {
+            background: #1a1a1a;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--primary);
+            color: var(--secondary);
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.dark-mode .sidebar {
+            background: #0a192f;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .sidebar-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .sidebar-logo span {
+            color: var(--accent);
+        }
+        
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-info p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            gap: 12px;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 62, 0, 0.2);
+            border-left-color: var(--accent);
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 1rem;
+        }
+        
+        .content-header {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        body.dark-mode .content-header {
+            background: #172a45;
+        }
+        
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .header-title p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .header-title p {
+            color: #a8b2d1;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dashboard-card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .dashboard-card {
+            background: #172a45;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .card-icon.blue {
+            background: linear-gradient(135deg, #2196F3, #0d47a1);
+        }
+        
+        .card-icon.green {
+            background: linear-gradient(135deg, #4CAF50, #1b5e20);
+        }
+        
+        .card-icon.orange {
+            background: linear-gradient(135deg, #FF9800, #e65100);
+        }
+        
+        .card-icon.purple {
+            background: linear-gradient(135deg, #9C27B0, #4a148c);
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-title {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .card-title {
+            color: #a8b2d1;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        body.dark-mode .content-section {
+            background: #172a45;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Track Order Section */
+        .track-order-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .track-order-form input {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .track-order-form input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+        
+        .track-order-form input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .tracking-result {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        body.dark-mode .tracking-result {
+            background: #2a2a2a;
+        }
+        
+        .tracking-result.show {
+            display: block;
+        }
+        
+        .tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.dark-mode .tracking-header {
+            border-bottom: 1px solid #444;
+        }
+        
+        .tracking-id {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.in-transit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-badge.delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.pending {
+            background: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .status-badge.delayed {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        body.dark-mode .status-badge.in-transit {
+            background: rgba(25, 118, 210, 0.2);
+            color: #64b5f6;
+        }
+        
+        body.dark-mode .status-badge.delivered {
+            background: rgba(56, 142, 60, 0.2);
+            color: #81c784;
+        }
+        
+        body.dark-mode .status-badge.pending {
+            background: rgba(255, 160, 0, 0.2);
+            color: #ffb74d;
+        }
+        
+        body.dark-mode .status-badge.delayed {
+            background: rgba(198, 40, 40, 0.2);
+            color: #ef9a9a;
+        }
+        
+        .tracking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-item {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        body.dark-mode .detail-item {
+            background: #0a192f;
+        }
+        
+        .detail-item h4 {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .detail-item h4 {
+            color: #a8b2d1;
+        }
+        
+        .detail-item p {
+            font-weight: 500;
+        }
+        
+        .tracking-timeline {
+            margin-top: 1.5rem;
+        }
+        
+        .timeline-header {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0.5rem;
+            width: 2px;
+            height: 100%;
+            background: #ddd;
+        }
+        
+        body.dark-mode .timeline::before {
+            background: #444;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-time {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .timeline-time {
+            color: #aaa;
+        }
+        
+        .timeline-location {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-status {
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .timeline-status {
+            color: #aaa;
+        }
+        
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .data-table th {
+            border-bottom: 1px solid #2a3f5f;
+            color: #a8b2d1;
+        }
+        
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .data-table td {
+            border-bottom: 1px solid #2a3f5f;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        body.dark-mode .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e6f1ff;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select,
+        body.dark-mode .form-group textarea {
+            background: #0a192f;
+            border-color: #2a3f5f;
+            color: #e6f1ff;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        /* Customer Support */
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .support-option {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        body.dark-mode .support-option {
+            background: #2a2a2a;
+        }
+        
+        .support-option:hover {
+            transform: translateY(-5px);
+        }
+        
+        .support-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .support-option h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .support-option p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .support-option p {
+            color: #aaa;
+        }
+        
+        /* Invoice List */
+        .invoice-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .invoice-item {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        body.dark-mode .invoice-item {
+            background: #2a2a2a;
+        }
+        
+        .invoice-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-number {
+            font-weight: 600;
+        }
+        
+        .invoice-date {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .invoice-date {
+            color: #aaa;
+        }
+        
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .invoice-detail-label {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .invoice-detail-label {
+            color: #aaa;
+        }
+        
+        .invoice-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Quote Requests */
+        .quote-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .quote-item {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        body.dark-mode .quote-item {
+            background: #2a2a2a;
+        }
+        
+        .quote-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .quote-id {
+            font-weight: 600;
+        }
+        
+        .quote-date {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .quote-date {
+            color: #aaa;
+        }
+        
+        .quote-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quote-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .quote-detail-label {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .quote-detail-label {
+            color: #aaa;
+        }
+        
+        .quote-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 1rem 0;
+        }
+        
+        .quote-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        body.dark-mode .quote-status {
+            background: rgba(25, 118, 210, 0.2);
+            color: #64b5f6;
+        }
+        
+        .quote-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .rebook-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .rebook-btn:hover {
+            background: #e03500;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        body.dark-mode .modal-content {
+            background: #172a45;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .close-modal {
+            color: #a8b2d1;
+        }
+        
+        /* Mobile Toggle */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-sidebar-toggle {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .track-order-form {
+                flex-direction: column;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .support-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .invoice-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .quote-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING USER DASHBOARD</div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div class="user-dashboard">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="mobile-sidebar-toggle" id="mobileSidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-logo">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-info">
+                    <h4 id="userName">User Name</h4>
+                    <p>Customer</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item" data-section="track-orders">
+                    <i class="fas fa-search-location"></i>
+                    <span>Track Orders</span>
+                </a>
+                <a href="#" class="menu-item" data-section="my-bookings">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>My Bookings</span>
+                    <span class="menu-badge">5</span>
+                </a>
+                <a href="#" class="menu-item" data-section="invoices">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Invoices</span>
+                </a>
+                <a href="#" class="menu-item" data-section="quote-requests">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Quote Requests</span>
+                    <span class="menu-badge">3</span>
+                </a>
+                <a href="#" class="menu-item" data-section="profile">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Profile Management</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-outline" id="logoutBtn" style="width: 100%;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Content Header -->
+            <div class="content-header">
+                <div class="header-title">
+                    <h1>User Dashboard</h1>
+                    <p>Welcome back, <span id="userNameHeader">User</span>! Track your shipments and manage your orders.</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-badge">2</div>
+                    </div>
+                    
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Overview</h2>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon blue">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="activeShipments">3</div>
+                        <div class="card-title">Active Shipments</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="completedShipments">12</div>
+                        <div class="card-title">Completed Shipments</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon orange">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="pendingQuotes">3</div>
+                        <div class="card-title">Pending Quotes</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-icon purple">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="totalBookings">5</div>
+                        <div class="card-title">Total Bookings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track Orders Section -->
+            <div id="track-orders-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Track Orders</h2>
+                </div>
+                
+                <div class="track-order-form">
+                    <input type="text" id="trackingInput" placeholder="Enter tracking ID">
+                    <button class="btn" id="trackBtn">Track Shipment</button>
+                </div>
+                
+                <div class="tracking-result" id="trackingResult">
+                    <div class="tracking-header">
+                        <div class="tracking-id" id="trackingId">VL123456</div>
+                        <div class="status-badge in-transit">In Transit</div>
+                    </div>
+                    
+                    <div class="tracking-details">
+                        <div class="detail-item">
+                            <h4>Origin</h4>
+                            <p id="trackingOrigin">Lagos</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Destination</h4>
+                            <p id="trackingDestination">Abuja</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Estimated Delivery</h4>
+                            <p id="trackingETA">Oct 20, 2023</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Current Location</h4>
+                            <p id="trackingLocation">Benin City</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-timeline">
+                        <h3 class="timeline-header">Shipment History</h3>
+                        <div class="timeline" id="trackingTimeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023-10-18</div>
+                                <div class="timeline-time">10:30</div>
+                                <div class="timeline-location">Lagos</div>
+                                <div class="timeline-status">Package received</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023-10-18</div>
+                                <div class="timeline-time">14:45</div>
+                                <div class="timeline-location">Lagos Warehouse</div>
+                                <div class="timeline-status">In transit to Abuja</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023-10-19</div>
+                                <div class="timeline-time">09:15</div>
+                                <div class="timeline-location">Benin City</div>
+                                <div class="timeline-status">In transit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Bookings Section -->
+            <div id="my-bookings-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">My Bookings</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-small" id="exportBookings">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Date</th>
+                                <th>Origin</th>
+                                <th>Destination</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable">
+                            <tr>
+                                <td>BK001</td>
+                                <td>2023-10-15</td>
+                                <td>Lagos</td>
+                                <td>Abuja</td>
+                                <td><span class="status-badge delivered">Delivered</span></td>
+                                <td>₦45,000</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewBooking('BK001')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="downloadReceipt('BK001')">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-small rebook-btn" onclick="rebookBooking('BK001')">
+                                            <i class="fas fa-redo"></i> Rebook
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BK002</td>
+                                <td>2023-10-10</td>
+                                <td>Port Harcourt</td>
+                                <td>Kano</td>
+                                <td><span class="status-badge delivered">Delivered</span></td>
+                                <td>₦78,000</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewBooking('BK002')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="downloadReceipt('BK002')">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-small rebook-btn" onclick="rebookBooking('BK002')">
+                                            <i class="fas fa-redo"></i> Rebook
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BK003</td>
+                                <td>2023-10-18</td>
+                                <td>Abuja</td>
+                                <td>Enugu</td>
+                                <td><span class="status-badge in-transit">In Transit</span></td>
+                                <td>₦32,000</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewBooking('BK003')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="downloadReceipt('BK003')">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-small rebook-btn" onclick="rebookBooking('BK003')">
+                                            <i class="fas fa-redo"></i> Rebook
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BK004</td>
+                                <td>2023-10-05</td>
+                                <td>Kano</td>
+                                <td>Lagos</td>
+                                <td><span class="status-badge delivered">Delivered</span></td>
+                                <td>₦55,000</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewBooking('BK004')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="downloadReceipt('BK004')">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-small rebook-btn" onclick="rebookBooking('BK004')">
+                                            <i class="fas fa-redo"></i> Rebook
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BK005</td>
+                                <td>2023-10-12</td>
+                                <td>Enugu</td>
+                                <td>Port Harcourt</td>
+                                <td><span class="status-badge in-transit">In Transit</span></td>
+                                <td>₦67,000</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-outline" onclick="viewBooking('BK005')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" onclick="downloadReceipt('BK005')">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-small rebook-btn" onclick="rebookBooking('BK005')">
+                                            <i class="fas fa-redo"></i> Rebook
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Invoices Section -->
+            <div id="invoices-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Invoices</h2>
+                </div>
+                
+                <div class="invoice-list">
+                    <div class="invoice-item">
+                        <div class="invoice-header">
+                            <div class="invoice-number">INV-2023-001</div>
+                            <div class="invoice-date">Oct 15, 2023</div>
+                        </div>
+                        <div class="invoice-details">
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Amount:</span>
+                                <span>₦45,000</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Status:</span>
+                                <span>Paid</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Due Date:</span>
+                                <span>Oct 18, 2023</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Booking ID:</span>
+                                <span>BK001</span>
+                            </div>
+                        </div>
+                        <div class="invoice-actions">
+                            <button class="btn btn-small btn-outline">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="invoice-item">
+                        <div class="invoice-header">
+                            <div class="invoice-number">INV-2023-002</div>
+                            <div class="invoice-date">Oct 10, 2023</div>
+                        </div>
+                        <div class="invoice-details">
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Amount:</span>
+                                <span>₦78,000</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Status:</span>
+                                <span>Paid</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Due Date:</span>
+                                <span>Oct 13, 2023</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Booking ID:</span>
+                                <span>BK002</span>
+                            </div>
+                        </div>
+                        <div class="invoice-actions">
+                            <button class="btn btn-small btn-outline">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="invoice-item">
+                        <div class="invoice-header">
+                            <div class="invoice-number">INV-2023-003</div>
+                            <div class="invoice-date">Oct 18, 2023</div>
+                        </div>
+                        <div class="invoice-details">
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Amount:</span>
+                                <span>₦32,000</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Status:</span>
+                                <span>Pending</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Due Date:</span>
+                                <span>Oct 21, 2023</span>
+                            </div>
+                            <div class="invoice-detail">
+                                <span class="invoice-detail-label">Booking ID:</span>
+                                <span>BK003</span>
+                            </div>
+                        </div>
+                        <div class="invoice-actions">
+                            <button class="btn btn-small btn-outline">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-money-bill-wave"></i> Pay Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote Requests Section -->
+            <div id="quote-requests-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Quote Requests</h2>
+                </div>
+                
+                <div class="quote-list">
+                    <div class="quote-item">
+                        <div class="quote-header">
+                            <div class="quote-id">QR-2023-001</div>
+                            <div class="quote-date">Oct 14, 2023</div>
+                        </div>
+                        <div class="quote-details">
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Origin:</span>
+                                <span>Lagos</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Destination:</span>
+                                <span>Port Harcourt</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Weight:</span>
+                                <span>25 kg</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Dimensions:</span>
+                                <span>30x20x15 cm</span>
+                            </div>
+                        </div>
+                        <div class="quote-price">₦15,500</div>
+                        <div class="quote-status">Approved</div>
+                        <div class="quote-actions">
+                            <button class="btn btn-small">
+                                <i class="fas fa-check-circle"></i> Accept
+                            </button>
+                            <button class="btn btn-small btn-outline">
+                                <i class="fas fa-times"></i> Decline
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="quote-item">
+                        <div class="quote-header">
+                            <div class="quote-id">QR-2023-002</div>
+                            <div class="quote-date">Oct 18, 2023</div>
+                        </div>
+                        <div class="quote-details">
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Origin:</span>
+                                <span>Abuja</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Destination:</span>
+                                <span>Kano</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Weight:</span>
+                                <span>45 kg</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Dimensions:</span>
+                                <span>50x40x30 cm</span>
+                            </div>
+                        </div>
+                        <div class="quote-price">₦24,800</div>
+                        <div class="quote-status">Pending</div>
+                        <div class="quote-actions">
+                            <button class="btn btn-small" disabled>
+                                <i class="fas fa-hourglass-half"></i> Waiting
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="quote-item">
+                        <div class="quote-header">
+                            <div class="quote-id">QR-2023-003</div>
+                            <div class="quote-date">Oct 20, 2023</div>
+                        </div>
+                        <div class="quote-details">
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Origin:</span>
+                                <span>Ibadan</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Destination:</span>
+                                <span>Kaduna</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Weight:</span>
+                                <span>18 kg</span>
+                            </div>
+                            <div class="quote-detail">
+                                <span class="quote-detail-label">Dimensions:</span>
+                                <span>25x20x15 cm</span>
+                            </div>
+                        </div>
+                        <div class="quote-price">₦12,300</div>
+                        <div class="quote-status">Approved</div>
+                        <div class="quote-actions">
+                            <button class="btn btn-small">
+                                <i class="fas fa-check-circle"></i> Accept
+                            </button>
+                            <button class="btn btn-small btn-outline">
+                                <i class="fas fa-times"></i> Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Management Section -->
+            <div id="profile-section" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Profile Management</h2>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" value="John">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" value="Doe">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" value="john.doe@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" value="+234 (0) 812 345 6789">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input type="text" id="company" value="Tech Solutions Ltd">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" rows="3">123 Main Street, Lagos Island, Lagos</textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Update Profile</button>
+                </form>
+                
+                <div class="section-header" style="margin-top: 2rem;">
+                    <h2 class="section-title">Change Password</h2>
+                </div>
+                
+                <form id="passwordForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Change Password</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Rebooking Modal -->
+    <div class="modal" id="rebookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Rebook Shipment</h3>
+                <button class="close-modal" id="closeRebookModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="rebookForm">
+                <div class="form-group">
+                    <label for="bookingId">Booking ID</label>
+                    <input type="text" id="bookingId" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newOrigin">New Origin</label>
+                    <input type="text" id="newOrigin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newDestination">New Destination</label>
+                    <input type="text" id="newDestination" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newDate">New Shipment Date</label>
+                    <input type="date" id="newDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialInstructions">Special Instructions</label>
+                    <textarea id="specialInstructions" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Submit Rebooking</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+
+        // Initialize user dashboard
+        function initUserDashboard() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('velocitylog_currentUser');
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            
+            // Update user info
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userNameHeader').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+            
+            // Setup event listeners
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Mobile sidebar toggle
+            const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            mobileSidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // Menu navigation
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all items
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show selected section
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.style.display = 'block';
+                    }
+                    
+                    // Close mobile sidebar
+                    sidebar.classList.remove('active');
+                });
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            // Track shipment
+            document.getElementById('trackBtn').addEventListener('click', function() {
+                const trackingId = document.getElementById('trackingInput').value;
+                if (trackingId) {
+                    trackShipment(trackingId);
+                } else {
+                    showNotification('Please enter a tracking ID', 'error');
+                }
+            });
+
+            // Rebook modal
+            const rebookModal = document.getElementById('rebookModal');
+            const closeRebookModal = document.getElementById('closeRebookModal');
+            const rebookForm = document.getElementById('rebookForm');
+            
+            closeRebookModal.addEventListener('click', function() {
+                rebookModal.classList.remove('show');
+            });
+            
+            rebookForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const bookingId = document.getElementById('bookingId').value;
+                const newOrigin = document.getElementById('newOrigin').value;
+                const newDestination = document.getElementById('newDestination').value;
+                const newDate = document.getElementById('newDate').value;
+                
+                // Close modal and show success message
+                rebookModal.classList.remove('show');
+                showNotification(`Booking ${bookingId} rebooked successfully!`);
+                
+                // Reset form
+                rebookForm.reset();
+            });
+
+            // Export bookings
+            document.getElementById('exportBookings').addEventListener('click', function() {
+                showNotification('Bookings exported successfully');
+            });
+
+            // Profile form
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('Profile updated successfully');
+            });
+
+            // Password form
+            document.getElementById('passwordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (newPassword !== confirmPassword) {
+                    showNotification('Passwords do not match', 'error');
+                    return;
+                }
+                
+                showNotification('Password changed successfully');
+                document.getElementById('passwordForm').reset();
+            });
+        }
+
+        // Track shipment
+        function trackShipment(trackingId) {
+            // In a real app, this would fetch data from an API
+            // For demo, we'll use sample data
+            const trackingResult = document.getElementById('trackingResult');
+            trackingResult.classList.add('show');
+            
+            document.getElementById('trackingId').textContent = trackingId;
+            
+            // Update tracking details based on ID
+            if (trackingId === 'VL123456') {
+                document.getElementById('trackingOrigin').textContent = 'Lagos';
+                document.getElementById('trackingDestination').textContent = 'Abuja';
+                document.getElementById('trackingETA').textContent = 'Oct 20, 2023';
+                document.getElementById('trackingLocation').textContent = 'Benin City';
+                document.querySelector('.status-badge').className = 'status-badge in-transit';
+                document.querySelector('.status-badge').textContent = 'In Transit';
+            } else if (trackingId === 'VL789012') {
+                document.getElementById('trackingOrigin').textContent = 'Port Harcourt';
+                document.getElementById('trackingDestination').textContent = 'Kano';
+                document.getElementById('trackingETA').textContent = 'Oct 17, 2023';
+                document.getElementById('trackingLocation').textContent = 'Kano Warehouse';
+                document.querySelector('.status-badge').className = 'status-badge delivered';
+                document.querySelector('.status-badge').textContent = 'Delivered';
+            } else {
+                document.getElementById('trackingOrigin').textContent = 'Unknown';
+                document.getElementById('trackingDestination').textContent = 'Unknown';
+                document.getElementById('trackingETA').textContent = 'N/A';
+                document.getElementById('trackingLocation').textContent = 'Unknown';
+                document.querySelector('.status-badge').className = 'status-badge pending';
+                document.querySelector('.status-badge').textContent = 'Pending';
+            }
+        }
+
+        // View booking
+        function viewBooking(id) {
+            showNotification(`Viewing booking: ${id}`);
+        }
+
+        // Download receipt
+        function downloadReceipt(id) {
+            showNotification(`Downloading receipt for booking: ${id}`);
+        }
+
+        // Rebook booking
+        function rebookBooking(id) {
+            const rebookModal = document.getElementById('rebookModal');
+            document.getElementById('bookingId').value = id;
+            rebookModal.classList.add('show');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 2001;
+                transform: translateX(150%);
+                transition: transform 0.3s ease;
+                max-width: 300px;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(150%)';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('velocitylog_currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initUserDashboard);
+    </script>
+</body>
+</html>

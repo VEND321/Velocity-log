@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your VelocityLog account. Sign up to access premium logistics services, track shipments, and manage your bookings.">
+    <title>Sign Up | VelocityLog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        /* Signup Page Specific Styles */
+        .signup-section {
+            padding: 8rem 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .signup-section {
+            background: #1a1a1a;
+        }
+        
+        .signup-container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            width: 90%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body.dark-mode .signup-container {
+            background: #1e1e1e;
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .signup-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .signup-header p {
+            color: #666;
+        }
+        
+        body.dark-mode .signup-header p {
+            color: #aaa;
+        }
+        
+        /* Account Type Toggle */
+        .account-type-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        body.dark-mode .account-type-toggle {
+            background: #2a2a2a;
+        }
+        
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .toggle-option.active {
+            color: var(--secondary);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--accent);
+            border-radius: 50px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 1;
+        }
+        
+        .toggle-slider.admin {
+            transform: translateX(100%);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .form-group input.error {
+            border-color: #f44336;
+        }
+        
+        .form-group input.success {
+            border-color: #4CAF50;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        body.dark-mode .password-toggle {
+            color: #aaa;
+        }
+        
+        .password-toggle:hover {
+            color: var(--accent);
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .password-strength.show {
+            display: block;
+        }
+        
+        .password-strength-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 2px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-strength-meter.weak {
+            width: 33%;
+            background: #f44336;
+        }
+        
+        .password-strength-meter.medium {
+            width: 66%;
+            background: #ff9800;
+        }
+        
+        .password-strength-meter.strong {
+            width: 100%;
+            background: #4CAF50;
+        }
+        
+        .password-strength-text {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            color: #666;
+        }
+        
+        body.dark-mode .password-strength-text {
+            color: #aaa;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .form-options {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .terms-checkbox input {
+            margin-top: 0.2rem;
+            cursor: pointer;
+        }
+        
+        .terms-checkbox label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .terms-checkbox a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+        
+        .signup-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .signup-btn.loading {
+            color: transparent;
+        }
+        
+        .signup-btn.loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spinner 0.8s linear infinite;
+        }
+        
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        body.dark-mode .divider::before {
+            background: #444;
+        }
+        
+        .divider span {
+            background: var(--secondary);
+            padding: 0 1rem;
+            position: relative;
+            color: #666;
+        }
+        
+        body.dark-mode .divider span {
+            background: #1e1e1e;
+            color: #aaa;
+        }
+        
+        .google-signup {
+            width: 100%;
+            padding: 0.9rem;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .google-signup:hover {
+            background: #3367d6;
+        }
+        
+        .google-signup.loading {
+            color: transparent;
+        }
+        
+        .google-signup.loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spinner 0.8s linear infinite;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+        
+        body.dark-mode .login-link {
+            color: #aaa;
+        }
+        
+        .login-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .admin-info {
+            background: rgba(255, 62, 0, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .admin-info.show {
+            display: block;
+        }
+        
+        .admin-info h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .admin-info p {
+            color: #aaa;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-width: 300px;
+            opacity: 0;
+        }
+        
+        body.dark-mode .notification {
+            background: #2a2a2a;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .notification.info {
+            background: #2196F3;
+        }
+        
+        .notification i {
+            margin-right: 10px;
+        }
+        
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .signup-section {
+                padding: 6rem 0;
+            }
+            
+            .signup-container {
+                padding: 2rem;
+            }
+            
+            .notification {
+                top: 80px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="true">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING SIGNUP PAGE</div>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo" aria-label="VelocityLog Home">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+                <div class="flag" aria-label="Nigeria">🇳🇬</div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html" aria-label="Home">Home</a></li>
+                    <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                    <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+                    <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+                    <li><a href="about.html" aria-label="About Us">About</a></li>
+                    <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline" aria-label="Login to your account">Login</a>
+                <a href="quote.html" class="btn" aria-label="Get a quote">Get Quote</a>
+            </div>
+            
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+        <button class="close-btn" id="closeNav" aria-label="Close mobile menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="index.html" class="logo" aria-label="VelocityLog Home">
+            <i class="fas fa-boxes-packing"></i>
+            Velocity<span>Log</span>
+        </a>
+        <ul>
+            <li><a href="index.html" aria-label="Home">Home</a></li>
+            <li><a href="index.html#services" aria-label="Services">Services</a></li>
+            <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+            <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+            <li><a href="about.html" aria-label="About Us">About</a></li>
+            <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+            <li><a href="login.html" aria-label="Login to your account">Login</a></li>
+            <li><a href="quote.html" aria-label="Get a quote">Get Quote</a></li>
+        </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Signup Section -->
+        <section class="signup-section" aria-label="Signup section">
+            <div class="signup-container">
+                <div class="signup-header">
+                    <h2>Create Account</h2>
+                    <p>Join VelocityLog to access premium logistics services</p>
+                </div>
+                
+                <!-- Account Type Toggle -->
+                <div class="account-type-toggle" role="tablist" aria-label="Account type selection">
+                    <div class="toggle-slider" id="toggleSlider" aria-hidden="true"></div>
+                    <div class="toggle-option active" id="userToggle" role="tab" aria-selected="true" aria-controls="user-panel" tabindex="0">User Account</div>
+                    <div class="toggle-option" id="adminToggle" role="tab" aria-selected="false" aria-controls="admin-panel" tabindex="-1">Admin Account</div>
+                </div>
+                
+                <!-- Admin Info Panel -->
+                <div class="admin-info" id="adminInfo" role="region" aria-label="Admin information">
+                    <h4><i class="fas fa-info-circle"></i> Admin Account</h4>
+                    <p>Admin accounts have access to system management features. Only select this if you're authorized to manage the VelocityLog system.</p>
+                </div>
+                
+                <form id="signupForm" novalidate>
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required autocomplete="name">
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Enter your phone number" required autocomplete="tel">
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" placeholder="Create a password" required autocomplete="new-password">
+                            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+                        </div>
+                        <div class="password-strength-text" id="passwordStrengthText"></div>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmPassword" placeholder="Confirm your password" required autocomplete="new-password">
+                            <button type="button" class="password-toggle" id="confirmPasswordToggle" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="confirmPasswordError"></div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <label for="agreeTerms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn signup-btn" id="signupBtn">Create Account</button>
+                </form>
+                
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                
+                <button class="google-signup" id="googleSignup" aria-label="Sign up with Google">
+                    <i class="fab fa-google"></i>
+                    Sign up with Google
+                </button>
+                
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Login</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer aria-label="Footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <a href="index.html" class="logo" aria-label="VelocityLog Home">
+                        <i class="fas fa-boxes-packing"></i>
+                        Velocity<span>Log</span>
+                    </a>
+                    <p>Delivering innovative logistics solutions worldwide with speed, precision, and reliability.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html" aria-label="Home">Home</a></li>
+                        <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                        <li><a href="track.html" aria-label="Track Shipment">Track Shipment</a></li>
+                        <li><a href="index.html#quote" aria-label="Get Quote">Get Quote</a></li>
+                        <li><a href="#" aria-label="Careers">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#" aria-label="Ocean Freight">Ocean Freight</a></li>
+                        <li><a href="#" aria-label="Air Cargo">Air Cargo</a></li>
+                        <li><a href="#" aria-label="Ground Transport">Ground Transport</a></li>
+                        <li><a href="#" aria-label="Warehousing">Warehousing</a></li>
+                        <li><a href="#" aria-label="Supply Chain">Supply Chain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Nigerian Offices</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos HQ: 123 Victoria Island</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Abuja Office: 45 Central District</li>
+                        <li><i class="fas fa-phone"></i> +234 (0) 812 345 6789</li>
+                        <li><i class="fas fa-envelope"></i> info@velocitylog.ng</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 6PM WAT</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VelocityLog. All rights reserved. | Designed by Vend Agency</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification" role="alert" aria-live="assertive">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+    
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+        
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Mobile menu functionality
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeNav = document.getElementById('closeNav');
+        
+        mobileToggle.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            mobileToggle.setAttribute('aria-expanded', 'true');
+        });
+        
+        closeNav.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+            mobileToggle.setAttribute('aria-expanded', 'false');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileNav.classList.contains('active') && 
+                !mobileNav.contains(event.target) && 
+                !mobileToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+                mobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        // Close mobile menu when a link is clicked
+        const mobileLinks = mobileNav.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+                mobileToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+        
+        // Account type toggle
+        const userToggle = document.getElementById('userToggle');
+        const adminToggle = document.getElementById('adminToggle');
+        const toggleSlider = document.getElementById('toggleSlider');
+        const adminInfo = document.getElementById('adminInfo');
+        
+        let isAdminAccount = false;
+        
+        userToggle.addEventListener('click', function() {
+            if (isAdminAccount) {
+                isAdminAccount = false;
+                userToggle.classList.add('active');
+                adminToggle.classList.remove('active');
+                toggleSlider.classList.remove('admin');
+                adminInfo.classList.remove('show');
+                
+                // Update ARIA attributes
+                userToggle.setAttribute('aria-selected', 'true');
+                userToggle.setAttribute('tabindex', '0');
+                adminToggle.setAttribute('aria-selected', 'false');
+                adminToggle.setAttribute('tabindex', '-1');
+                
+                // Clear any validation errors
+                clearValidationErrors();
+            }
+        });
+        
+        adminToggle.addEventListener('click', function() {
+            if (!isAdminAccount) {
+                isAdminAccount = true;
+                adminToggle.classList.add('active');
+                userToggle.classList.remove('active');
+                toggleSlider.classList.add('admin');
+                adminInfo.classList.add('show');
+                
+                // Update ARIA attributes
+                adminToggle.setAttribute('aria-selected', 'true');
+                adminToggle.setAttribute('tabindex', '0');
+                userToggle.setAttribute('aria-selected', 'false');
+                userToggle.setAttribute('tabindex', '-1');
+                
+                // Clear any validation errors
+                clearValidationErrors();
+            }
+        });
+        
+        // Password visibility toggles
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordToggleIcon = passwordToggle.querySelector('i');
+        
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+        const confirmPasswordToggleIcon = confirmPasswordToggle.querySelector('i');
+        
+        passwordToggle.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+                passwordToggle.setAttribute('aria-label', 'Hide password');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+                passwordToggle.setAttribute('aria-label', 'Show password');
+            }
+        });
+        
+        confirmPasswordToggle.addEventListener('click', function() {
+            if (confirmPasswordInput.type === 'password') {
+                confirmPasswordInput.type = 'text';
+                confirmPasswordToggleIcon.classList.remove('fa-eye');
+                confirmPasswordToggleIcon.classList.add('fa-eye-slash');
+                confirmPasswordToggle.setAttribute('aria-label', 'Hide password');
+            } else {
+                confirmPasswordInput.type = 'password';
+                confirmPasswordToggleIcon.classList.remove('fa-eye-slash');
+                confirmPasswordToggleIcon.classList.add('fa-eye');
+                confirmPasswordToggle.setAttribute('aria-label', 'Show password');
+            }
+        });
+        
+        // Password strength indicator
+        const passwordStrength = document.getElementById('passwordStrength');
+        const passwordStrengthMeter = document.getElementById('passwordStrengthMeter');
+        const passwordStrengthText = document.getElementById('passwordStrengthText');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            
+            if (password.length > 0) {
+                passwordStrength.classList.add('show');
+                
+                // Calculate password strength
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) {
+                    strength += 1;
+                }
+                
+                // Complexity checks
+                if (/[A-Z]/.test(password)) {
+                    strength += 1;
+                }
+                
+                if (/[0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // Update UI based on strength
+                passwordStrengthMeter.className = 'password-strength-meter';
+                
+                if (strength <= 1) {
+                    passwordStrengthMeter.classList.add('weak');
+                    passwordStrengthText.textContent = 'Weak password';
+                    passwordStrengthText.style.color = '#f44336';
+                } else if (strength <= 2) {
+                    passwordStrengthMeter.classList.add('medium');
+                    passwordStrengthText.textContent = 'Medium strength';
+                    passwordStrengthText.style.color = '#ff9800';
+                } else {
+                    passwordStrengthMeter.classList.add('strong');
+                    passwordStrengthText.textContent = 'Strong password';
+                    passwordStrengthText.style.color = '#4CAF50';
+                }
+            } else {
+                passwordStrength.classList.remove('show');
+            }
+        });
+        
+        // Form validation
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const agreeTermsCheckbox = document.getElementById('agreeTerms');
+        
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const phoneError = document.getElementById('phoneError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        
+        function validateName() {
+            const name = fullNameInput.value.trim();
+            
+            if (name === '') {
+                showError(fullNameInput, nameError, 'Name is required');
+                return false;
+            } else if (name.length < 2) {
+                showError(fullNameInput, nameError, 'Name must be at least 2 characters');
+                return false;
+            } else {
+                showSuccess(fullNameInput);
+                hideError(nameError);
+                return true;
+            }
+        }
+        
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email === '') {
+                showError(emailInput, emailError, 'Email is required');
+                return false;
+            } else if (!emailRegex.test(email)) {
+                showError(emailInput, emailError, 'Please enter a valid email address');
+                return false;
+            } else {
+                // Check if email already exists
+                const existingUsers = JSON.parse(localStorage.getItem('velocitylog_users') || '[]');
+                if (existingUsers.some(user => user.email === email)) {
+                    showError(emailInput, emailError, 'Email already exists');
+                    return false;
+                }
+                
+                showSuccess(emailInput);
+                hideError(emailError);
+                return true;
+            }
+        }
+        
+        function validatePhone() {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+            
+            if (phone === '') {
+                showError(phoneInput, phoneError, 'Phone number is required');
+                return false;
+            } else if (!phoneRegex.test(phone)) {
+                showError(phoneInput, phoneError, 'Please enter a valid phone number');
+                return false;
+            } else if (phone.replace(/\D/g, '').length < 10) {
+                showError(phoneInput, phoneError, 'Phone number must be at least 10 digits');
+                return false;
+            } else {
+                showSuccess(phoneInput);
+                hideError(phoneError);
+                return true;
+            }
+        }
+        
+        function validatePassword() {
+            const password = passwordInput.value.trim();
+            
+            if (password === '') {
+                showError(passwordInput, passwordError, 'Password is required');
+                return false;
+            } else if (password.length < 6) {
+                showError(passwordInput, passwordError, 'Password must be at least 6 characters');
+                return false;
+            } else {
+                showSuccess(passwordInput);
+                hideError(passwordError);
+                return true;
+            }
+        }
+        
+        function validateConfirmPassword() {
+            const password = passwordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            
+            if (confirmPassword === '') {
+                showError(confirmPasswordInput, confirmPasswordError, 'Please confirm your password');
+                return false;
+            } else if (password !== confirmPassword) {
+                showError(confirmPasswordInput, confirmPasswordError, 'Passwords do not match');
+                return false;
+            } else {
+                showSuccess(confirmPasswordInput);
+                hideError(confirmPasswordError);
+                return true;
+            }
+        }
+        
+        function validateTerms() {
+            if (!agreeTermsCheckbox.checked) {
+                showNotification('You must agree to the terms and conditions', 'error');
+                return false;
+            }
+            return true;
+        }
+        
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+        
+        function showSuccess(input) {
+            input.classList.add('success');
+            input.classList.remove('error');
+        }
+        
+        function hideError(errorElement) {
+            errorElement.classList.remove('show');
+        }
+        
+        function clearValidationErrors() {
+            fullNameInput.classList.remove('error', 'success');
+            emailInput.classList.remove('error', 'success');
+            phoneInput.classList.remove('error', 'success');
+            passwordInput.classList.remove('error', 'success');
+            confirmPasswordInput.classList.remove('error', 'success');
+            
+            nameError.classList.remove('show');
+            emailError.classList.remove('show');
+            phoneError.classList.remove('show');
+            passwordError.classList.remove('show');
+            confirmPasswordError.classList.remove('show');
+        }
+        
+        // Real-time validation
+        fullNameInput.addEventListener('blur', validateName);
+        emailInput.addEventListener('blur', validateEmail);
+        phoneInput.addEventListener('blur', validatePhone);
+        passwordInput.addEventListener('blur', validatePassword);
+        confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+        
+        // User data management
+        const userData = {
+            users: [
+                { email: 'user@example.com', password: 'password123', name: 'John Doe', phone: '+2348123456789' },
+                { email: 'admin@velocitylog.ng', password: 'admin123', name: 'Admin User', phone: '+2348123456789', role: 'admin' }
+            ]
+        };
+        
+        // Load saved user data from localStorage
+        function loadUserData() {
+            const savedUsers = localStorage.getItem('velocitylog_users');
+            if (savedUsers) {
+                userData.users = JSON.parse(savedUsers);
+            }
+        }
+        
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('velocitylog_users', JSON.stringify(userData.users));
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const notificationIcon = notification.querySelector('i');
+            
+            // Update notification icon based on type
+            notificationIcon.className = '';
+            
+            if (type === 'success') {
+                notificationIcon.classList.add('fas', 'fa-check-circle');
+            } else if (type === 'error') {
+                notificationIcon.classList.add('fas', 'fa-exclamation-circle');
+            } else if (type === 'info') {
+                notificationIcon.classList.add('fas', 'fa-info-circle');
+            }
+            
+            notificationText.textContent = message;
+            notification.className = 'notification show ' + type;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Signup form submission
+        const signupForm = document.getElementById('signupForm');
+        const signupBtn = document.getElementById('signupBtn');
+        
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPhoneValid = validatePhone();
+            const isPasswordValid = validatePassword();
+            const isConfirmPasswordValid = validateConfirmPassword();
+            const isTermsValid = validateTerms();
+            
+            if (!isNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid || !isTermsValid) {
+                return;
+            }
+            
+            // Show loading state
+            signupBtn.classList.add('loading');
+            signupBtn.disabled = true;
+            
+            // Get form values
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Create new user object
+                const newUser = {
+                    name: fullName,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    role: isAdminAccount ? 'admin' : 'user',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Add user to data
+                userData.users.push(newUser);
+                saveUserData();
+                
+                showNotification(`Account created successfully! Welcome, ${fullName}!`);
+                
+                // Redirect to login page after successful signup
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Google Sign-Up (simulated)
+        const googleSignup = document.getElementById('googleSignup');
+        
+        googleSignup.addEventListener('click', function() {
+            // Show loading state
+            googleSignup.classList.add('loading');
+            googleSignup.disabled = true;
+            
+            // Simulate Google Sign-Up
+            setTimeout(() => {
+                // Create a mock Google user
+                const googleUser = {
+                    name: 'Google User',
+                    email: 'google.user' + Math.floor(Math.random() * 10000) + '@gmail.com',
+                    phone: '+2348000000000',
+                    provider: 'google',
+                    role: isAdminAccount ? 'admin' : 'user',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Add user to data
+                userData.users.push(googleUser);
+                saveUserData();
+                
+                showNotification(`Account created successfully! Welcome, ${googleUser.name}!`);
+                
+                // Redirect to login page after successful signup
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Initialize user data
+        loadUserData();
+        
+        // Auto-focus on name input when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                fullNameInput.focus();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
