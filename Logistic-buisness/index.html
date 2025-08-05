@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VelocityLog - Premium logistics solutions with global shipping, real-time tracking, and supply chain management for businesses across Nigeria and beyond.">
+    <meta name="keywords" content="logistics, shipping, freight, supply chain, cargo, tracking, Nigeria, global shipping">
+    <title>VelocityLog | Premium Logistics Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== REUSABLE STYLES ===== */
+        @font-face {
+          font-family: 'YourFont';
+         src: 
+         url('assets/Belix.ttf') format('woff2'),
+         url('') format('woff');
+}
+
+        :root {
+            --primary: #0a192f;
+            --secondary: #ffffff;
+            --accent: #ff3e00;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --text-color: #333;
+            --transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --border-radius: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --card-padding: 2.5rem;
+            --section-padding: 6rem 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color);
+            background-color: var(--secondary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode {
+            --primary: #ffffff;
+            --secondary: #0a192f;
+            --light-gray: #1a1f2e;
+            --dark-gray: #a8b2d1;
+            --text-color: #e6f1ff;
+            background-color: #0a192f;
+            color: #e6f1ff;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            padding: var(--section-padding);
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem auto;
+        }
+        
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2:after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-top: 1.5rem;
+        }
+        
+        body.dark-mode .section-header p {
+            color: #a8b2d1;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--secondary);
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 62, 0, 0.3);
+        }
+        
+        .btn:hover {
+            background: #e03500;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 62, 0, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .btn-large {
+            padding: 1.1rem 2.5rem;
+            font-size: 1rem;
+        }
+        
+        /* ===== END REUSABLE STYLES ===== */
+        
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .preloader-content {
+            text-align: center;
+            color: var(--secondary);
+        }
+        
+        .delivery-truck {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: moveTruck 3s infinite;
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            animation: loading 2s infinite;
+            border-radius: 4px;
+        }
+        
+        .loading-text {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            font-weight: 300;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        @keyframes moveTruck {
+            0% { transform: translateX(-100px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100px); opacity: 0; }
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 50%; }
+            100% { width: 100%; }
+        }
+        
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode header {
+            background: rgba(10, 25, 47, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-family:  'YourFont','Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav li {
+            margin-left: 2rem;
+        }
+        
+        nav a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body.dark-mode nav a {
+            color: #e6f1ff;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .mobile-toggle {
+            color: #e6f1ff;
+        }
+        
+        .flag {
+            font-size: 1.5rem;
+        }
+        
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode .theme-toggle {
+            color: #e6f1ff;
+        }
+        
+        body.dark-mode .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(10, 25, 47, 0.475) 0%, rgba(10, 25, 47, 0.29) 100%);
+        }
+        
+        .hero-content {
+            color: var(--secondary);
+            max-width: 800px;
+            z-index: 2;
+            padding: 0 2rem;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 62, 0, 0.2);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .hero h1 {
+            font-size: 3.8rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Services Section */
+        .services {
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .services {
+            background: #0a192f;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .service-card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            padding: var(--card-padding);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        body.dark-mode .service-card {
+            background: #172a45;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            background: rgba(255, 62, 0, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .service-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card p {
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        body.dark-mode .service-card p {
+            color: #a8b2d1;
+        }
+        
+        /* Why Choose Us Section */
+        .features {
+            background: var(--secondary);
+        }
+        
+        body.dark-mode .features {
+            background: #0a192f;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .feature-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        body.dark-mode .feature-card {
+            background: #172a45;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            height: 70px;
+            width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 62, 0, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+        
+        body.dark-mode .feature-card p {
+            color: #a8b2d1;
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 5rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .stat-item.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .stat-item p {
+            font-size: 1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            background: var(--light-gray);
+            padding: var(--section-padding);
+        }
+        
+        body.dark-mode .testimonials {
+            background: #0a192f;
+        }
+        
+        .testimonials-slider {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .testimonial-card {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        body.dark-mode .testimonial-card {
+            background: #172a45;
+        }
+        
+        .testimonial-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        body.dark-mode .testimonial-text {
+            color: #a8b2d1;
+        }
+        
+        .testimonial-text:before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.2;
+            position: absolute;
+            top: -20px;
+            left: -20px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .author-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-info p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .author-info p {
+            color: #a8b2d1;
+        }
+        
+        .testimonial-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .testimonial-btn {
+            background: rgba(255, 62, 0, 0.1);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--accent);
+        }
+        
+        .testimonial-btn:hover {
+            background: var(--accent);
+            color: var(--secondary);
+        }
+        
+        /* Quote Calculator */
+        .quote-section {
+            background: var(--secondary);
+            padding: var(--section-padding);
+        }
+        
+        body.dark-mode .quote-section {
+            background: #0a192f;
+        }
+        
+        .quote-container {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+            padding: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        body.dark-mode .quote-container {
+            background: #172a45;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quote-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e6f1ff;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select {
+            background: #0a192f;
+            border-color: #2a3f5f;
+            color: #e6f1ff;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .quote-result {
+            background: var(--primary);
+            color: var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .quote-result h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .price-display {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
+            color: var(--accent);
+        }
+        
+        .quote-details {
+            margin-top: 1.5rem;
+        }
+        
+        .quote-details p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+        }
+        
+        .quote-details span {
+            font-weight: 500;
+        }
+        
+        .auth-prompt {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .auth-prompt p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Featured Section */
+        .featured-section {
+            padding: var(--section-padding);
+            background: var(--secondary);
+        }
+        
+        body.dark-mode .featured-section {
+            background: #0a192f;
+        }
+        
+        .featured-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .featured-logo {
+            font-size: 2.5rem;
+            color: var(--dark-gray);
+            transition: var(--transition);
+            opacity: 0.7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .featured-logo span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        body.dark-mode .featured-logo span {
+            color: #e6f1ff;
+        }
+        
+        .featured-logo:hover {
+            color: var(--accent);
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+        
+        body.dark-mode .featured-logo:hover {
+            color: #e6f1ff;
+        }
+        
+        /* Newsletter Section */
+        .newsletter {
+            background: var(--light-gray);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        body.dark-mode .newsletter {
+            background: #0a192f;
+        }
+        
+        .newsletter h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .newsletter p {
+            color: #a8b2d1;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 10px;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .newsletter-form input {
+            background: #172a45;
+            border-color: #2a3f5f;
+            color: #e6f1ff;
+        }
+        
+        .newsletter-form button {
+            padding: 1rem 1.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: var(--secondary);
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .footer-column a {
+            color: #a8b2d1;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-column p {
+            color: #a8b2d1;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary);
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+            color: #a8b2d1;
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: var(--secondary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 99;
+            box-shadow: 0 5px 15px rgba(255, 62, 0, 0.3);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 62, 0, 0.4);
+        }
+        
+        /* Cookie Consent */
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+        
+        .cookie-consent.show {
+            transform: translateY(0);
+        }
+        
+        .cookie-consent p {
+            margin: 0;
+            font-size: 0.95rem;
+            max-width: 80%;
+        }
+        
+        .cookie-consent a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .cookie-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .cookie-accept {
+            background: var(--accent);
+            color: var(--secondary);
+            border: none;
+        }
+        
+        .cookie-decline {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: var(--primary);
+            z-index: 1001;
+            transition: var(--transition);
+            padding: 2rem;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+        }
+        
+        .mobile-nav.active {
+            right: 0;
+        }
+        
+        .mobile-nav .logo {
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+        
+        .mobile-nav ul {
+            list-style: none;
+        }
+        
+        .mobile-nav ul li {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mobile-nav ul li a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.5rem 0;
+        }
+        
+        .mobile-nav ul li a:hover {
+            color: var(--accent);
+        }
+        
+        .mobile-nav .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .quote-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons .btn {
+                display: none;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 4rem 0;
+            }
+            
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+            
+            .featured-logos {
+                gap: 2rem;
+            }
+            
+            .featured-logo {
+                font-size: 2rem;
+            }
+            
+            .stat-item h3 {
+                font-size: 2.8rem;
+            }
+            
+            .cookie-consent {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cookie-consent p {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .stat-item {
+                padding: 1.5rem;
+            }
+            
+            .stat-item h3 {
+                font-size: 2.5rem;
+            }
+            
+            .stat-item p {
+                font-size: 1rem;
+            }
+            
+            .featured-logo {
+                gap: 5px;
+            }
+            
+            .featured-logo span {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING LOGISTICS SOLUTIONS</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+                <div class="flag">🇳🇬</div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" aria-label="Home">Home</a></li>
+                    <li><a href="service.html" aria-label="Services">Services</a></li>
+                    <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+                    <li><a href="qoute.html" aria-label="Get Quote">Pricing</a></li>
+                    <li><a href="about.html" aria-label="About Us">About</a></li>
+                    <li><a href="#" aria-label="Contact Us">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline" aria-label="Login to your account">Login</a>
+                <a href="signup.html" class="btn btn-outline" aria-label="Login to your account">Sign-Up</a>
+            </div>
+            
+            <div class="mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+        <div class="close-btn" id="closeNav" aria-label="Close mobile menu">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="#" class="logo">
+            <i class="fas fa-boxes-packing"></i>
+            Velocity<span>Log</span>
+        </a>
+        <ul>
+            <li><a href="#" aria-label="Home">Home</a></li>
+            <li><a href="service.html" aria-label="Services">Services</a></li>
+            <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+            <li><a href="#quote" aria-label="Get Quote">Pricing</a></li>
+            <li><a href="about.html" aria-label="About Us">About</a></li>
+            <li><a href="#" aria-label="Contact Us">Contact</a></li>
+            <li><a href="login.html" aria-label="Login to your account">Login</a></li>
+            <li><a href="signup.html" aria-label="Get a quote">Sign-Up</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" aria-label="Hero section">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="assets/watermarked_preview (1).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="overlay"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">PREMIUM LOGISTICS SOLUTIONS</div>
+                <h1>Global Logistics, Local Excellence</h1>
+                <p>Delivering innovative supply chain solutions with speed, precision, and unparalleled customer service across 120+ countries.</p>
+                <div class="hero-buttons">
+                    <a href="track.html" class="btn btn-large" aria-label="Track your shipment">Track Shipment</a>
+                    <a href="#quote" class="btn btn-outline btn-large" aria-label="Calculate shipping quote">Calculate Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section services" id="services" aria-label="Our services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Logistics Services</h2>
+                <p>Comprehensive solutions tailored to your supply chain needs</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <h3>Ocean Freight</h3>
+                    <p>Cost-effective solutions for all your ocean freight needs with global coverage and real-time tracking.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h3>Air Cargo</h3>
+                    <p>Priority air freight services for time-sensitive shipments with guaranteed transit times.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Ground Transport</h3>
+                    <p>Comprehensive road and rail solutions with temperature-controlled options available.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <h3>Warehousing</h3>
+                    <p>Secure storage solutions with advanced inventory management and distribution services.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>Packaging</h3>
+                    <p>Custom packaging solutions to ensure your products arrive safely and undamaged.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Customs Brokerage</h3>
+                    <p>Expert clearance services to navigate complex customs regulations efficiently.</p>
+                    <a href="#" class="btn btn-outline">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="section features" aria-label="Why choose us">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose VelocityLog?</h2>
+                <p>Discover what sets us apart in the logistics industry</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-africa"></i>
+                    </div>
+                    <h3>Nigerian Expertise</h3>
+                    <p>Local knowledge with global reach. We understand Nigerian business landscapes and customs.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast Delivery</h3>
+                    <p>Average delivery times 30% faster than industry standards across Nigeria and West Africa.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Handling</h3>
+                    <p>Advanced tracking and security protocols ensure your shipments are always protected.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Nigerian Support</h3>
+                    <p>Dedicated customer service team available around the clock in Lagos and Abuja.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3>Competitive Naira Pricing</h3>
+                    <p>Transparent pricing in Nigerian Naira with no hidden fees or surprise charges.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Comprehensive dashboard with shipment analytics and custom reporting tools.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" aria-label="Our statistics">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3 id="counter1">0</h3>
+                    <p>Global Partners</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="counter2">0</h3>
+                    <p>On-Time Delivery</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="counter3">0</h3>
+                    <p>Countries Served</p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="counter4">0</h3>
+                    <p>Daily Shipments</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" aria-label="Customer testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Clients Say</h2>
+                <p>Trusted by businesses across Nigeria and beyond</p>
+            </div>
+            
+            <div class="testimonials-slider">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">VelocityLog has transformed our supply chain operations. Their reliability and speed have helped us expand our business across West Africa with confidence.</p>
+                    <div class="testimonial-author">
+                        <div class="author-image">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer photo">
+                        </div>
+                        <div class="author-info">
+                            <h4>Ahmed Ibrahim</h4>
+                            <p>CEO, TechNigeria Ltd</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-controls">
+                    <button class="testimonial-btn" aria-label="Previous testimonial">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="testimonial-btn" aria-label="Next testimonial">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Calculator -->
+    <section class="quote-section" id="quote" aria-label="Quote calculator">
+        <div class="container">
+            <div class="section-header">
+                <h2>Instant Quote Calculator</h2>
+                <p>Get an estimated shipping cost in seconds (Prices in ₦)</p>
+            </div>
+            
+            <div class="quote-container">
+                <div class="quote-form">
+                    <h3>Calculate Your Shipment</h3>
+                    <form id="quoteForm">
+                        <div class="form-group">
+                            <label for="origin">Origin</label>
+                            <select id="origin" required aria-required="true">
+                                <option value="">Select origin country</option>
+                                <option value="ng">Nigeria</option>
+                                <option value="us">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="cn">China</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <select id="destination" required aria-required="true">
+                                <option value="">Select destination country</option>
+                                <option value="ng">Nigeria</option>
+                                <option value="us">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="cn">China</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" min="1" max="1000" placeholder="e.g. 50" required aria-required="true">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="volume">Volume (m³)</label>
+                                <input type="number" id="volume" min="0.1" step="0.1" placeholder="e.g. 2.5" required aria-required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="service">Service Type</label>
+                            <select id="service" required aria-required="true">
+                                <option value="">Select service type</option>
+                                <option value="standard">Standard (10-15 days)</option>
+                                <option value="express">Express (5-7 days)</option>
+                                <option value="priority">Priority (2-3 days)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn" style="width: 100%;">Calculate Quote</button>
+                    </form>
+                </div>
+                
+                <div class="quote-result">
+                    <h3>Your Quote Estimate</h3>
+                    <p>Fill out the form to get an instant estimate for your shipment.</p>
+                    <div class="price-display" id="priceDisplay">₦ -</div>
+                    <div class="quote-details" id="quoteDetails">
+                        <p>Origin: <span id="originDisplay">-</span></p>
+                        <p>Destination: <span id="destDisplay">-</span></p>
+                        <p>Weight: <span id="weightDisplay">- kg</span></p>
+                        <p>Volume: <span id="volumeDisplay">- m³</span></p>
+                        <p>Service: <span id="serviceDisplay">-</span></p>
+                    </div>
+                    
+                    <div class="auth-prompt" id="authPrompt">
+                        <p>Sign up or login to save this quote and get additional benefits:</p>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <a href="signup.html" class="btn" style="flex: 1;">Sign Up</a>
+                            <a href="login.html" class="btn btn-outline" style="flex: 1;">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured-section" aria-label="Trusted by companies">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trusted By Top Nigerian Companies</h2>
+            </div>
+            
+            <div class="featured-logos">
+                <div class="featured-logo">
+                    <i class="fas fa-oil-well"></i>
+                    <span>NNPC</span>
+                </div>
+                <div class="featured-logo">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>MTN</span>
+                </div>
+                <div class="featured-logo">
+                    <i class="fas fa-beer"></i>
+                    <span>Guinness</span>
+                </div>
+                <div class="featured-logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Jumia</span>
+                </div>
+                <div class="featured-logo">
+                    <i class="fas fa-coffee"></i>
+                    <span>Dangote</span>
+                </div>
+                <div class="featured-logo">
+                    <i class="fas fa-university"></i>
+                    <span>UBA</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter" aria-label="Newsletter signup">
+        <div class="container">
+            <h3>Stay Updated</h3>
+            <p>Subscribe to our newsletter for the latest logistics insights and exclusive offers.</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" placeholder="Your email address" required aria-required="true">
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-label="Footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <a href="#" class="logo">
+                        <i class="fas fa-boxes-packing"></i>
+                        Velocity<span>Log</span>
+                    </a>
+                    <p>Delivering innovative logistics solutions worldwide with speed, precision, and reliability.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" aria-label="Home">Home</a></li>
+                        <li><a href="#services" aria-label="Services">Services</a></li>
+                        <li><a href="track.html" aria-label="Track Shipment">Track Shipment</a></li>
+                        <li><a href="#quote" aria-label="Get Quote">Get Quote</a></li>
+                        <li><a href="#" aria-label="Careers">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#" aria-label="Ocean Freight">Ocean Freight</a></li>
+                        <li><a href="#" aria-label="Air Cargo">Air Cargo</a></li>
+                        <li><a href="#" aria-label="Ground Transport">Ground Transport</a></li>
+                        <li><a href="#" aria-label="Warehousing">Warehousing</a></li>
+                        <li><a href="#" aria-label="Supply Chain">Supply Chain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Nigerian Offices</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos HQ: 123 Victoria Island</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Abuja Office: 45 Central District</li>
+                        <li><i class="fas fa-phone"></i> +234 (0) 812 345 6789</li>
+                        <li><i class="fas fa-envelope"></i> info@velocitylog.ng</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 6PM WAT</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VelocityLog. All rights reserved. | Designed by Vend Agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Cookie Consent -->
+    <div class="cookie-consent" id="cookieConsent">
+        <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies. <a href="#">Learn more</a></p>
+        <div class="cookie-buttons">
+            <button class="cookie-accept" id="acceptCookies">Accept</button>
+            <button class="cookie-decline" id="declineCookies">Decline</button>
+        </div>
+    </div>
+
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeNav = document.getElementById('closeNav');
+        
+        mobileToggle.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeNav.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileNav.classList.contains('active') && 
+                !mobileNav.contains(event.target) && 
+                !mobileToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu when a link is clicked
+        const mobileLinks = mobileNav.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Scroll animations for elements
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.service-card, .stat-item, .feature-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if(elementPosition < screenPosition) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Initialize on page load
+        animateOnScroll();
+
+        // Counter animation for stats
+        function startCounterAnimation() {
+            const counter1 = document.getElementById('counter1');
+            const counter2 = document.getElementById('counter2');
+            const counter3 = document.getElementById('counter3');
+            const counter4 = document.getElementById('counter4');
+            
+            const target1 = 250;
+            const target2 = 98;
+            const target3 = 120;
+            const target4 = 15;
+            
+            let count1 = 0;
+            let count2 = 0;
+            let count3 = 0;
+            let count4 = 0;
+            
+            const duration = 2000; // ms
+            const increment1 = target1 / (duration / 20);
+            const increment2 = target2 / (duration / 20);
+            const increment3 = target3 / (duration / 20);
+            const increment4 = target4 / (duration / 20);
+            
+            const timer = setInterval(() => {
+                count1 += increment1;
+                count2 += increment2;
+                count3 += increment3;
+                count4 += increment4;
+                
+                if (count1 > target1) count1 = target1;
+                if (count2 > target2) count2 = target2;
+                if (count3 > target3) count3 = target3;
+                if (count4 > target4) count4 = target4;
+                
+                counter1.textContent = Math.floor(count1) + '+';
+                counter2.textContent = Math.floor(count2) + '%';
+                counter3.textContent = Math.floor(count3) + '+';
+                counter4.textContent = Math.floor(count4) + 'K+';
+                
+                if (count1 >= target1 && count2 >= target2 && 
+                    count3 >= target3 && count4 >= target4) {
+                    clearInterval(timer);
+                }
+            }, 20);
+        }
+        
+        // Only start counter when stats section is visible
+        const statsSection = document.querySelector('.stats');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startCounterAnimation();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(statsSection);
+
+        // Quote Calculator Functionality
+        const quoteForm = document.getElementById('quoteForm');
+        const priceDisplay = document.getElementById('priceDisplay');
+        const originDisplay = document.getElementById('originDisplay');
+        const destDisplay = document.getElementById('destDisplay');
+        const weightDisplay = document.getElementById('weightDisplay');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+        const serviceDisplay = document.getElementById('serviceDisplay');
+        const authPrompt = document.getElementById('authPrompt');
+        
+        // Initially hide auth prompt
+        authPrompt.style.display = 'none';
+        
+        quoteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const volume = parseFloat(document.getElementById('volume').value);
+            const service = document.getElementById('service').value;
+            
+            // Calculate price based on inputs
+            let basePrice = 0;
+            
+            // Base price based on distance (simplified)
+            if (origin === destination) {
+                basePrice = 5000; // Naira for domestic
+            } else {
+                basePrice = 30000; // Naira for international
+            }
+            
+            // Add weight cost (₦100 per kg)
+            basePrice += weight * 100;
+            
+            // Add volume cost (₦5000 per m³)
+            basePrice += volume * 5000;
+            
+            // Apply service multiplier
+            if (service === 'express') {
+                basePrice *= 1.8;
+            } else if (service === 'priority') {
+                basePrice *= 2.5;
+            }
+            
+            // Format as currency
+            const formattedPrice = '₦' + basePrice.toLocaleString('en-NG');
+            
+            // Update display
+            priceDisplay.textContent = formattedPrice;
+            
+            // Update details
+            originDisplay.textContent = document.getElementById('origin').options[document.getElementById('origin').selectedIndex].text;
+            destDisplay.textContent = document.getElementById('destination').options[document.getElementById('destination').selectedIndex].text;
+            weightDisplay.textContent = weight + ' kg';
+            volumeDisplay.textContent = volume + ' m³';
+            serviceDisplay.textContent = document.getElementById('service').options[document.getElementById('service').selectedIndex].text;
+            
+            // Show auth prompt
+            authPrompt.style.display = 'block';
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.padding = '0.5rem 0';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.padding = '1rem 0';
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.08)';
+            }
+        });
+
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Newsletter form
+        const newsletterForm = document.getElementById('newsletterForm');
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = `Thank you! We've sent a confirmation email to ${email}`;
+            successMessage.style.cssText = `
+                background: #4CAF50;
+                color: white;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+                text-align: center;
+            `;
+            
+            this.appendChild(successMessage);
+            this.reset();
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                successMessage.remove();
+            }, 5000);
+        });
+
+        // Cookie consent
+        const cookieConsent = document.getElementById('cookieConsent');
+        const acceptCookies = document.getElementById('acceptCookies');
+        const declineCookies = document.getElementById('declineCookies');
+        
+        // Check if user has already made a choice
+        if (!localStorage.getItem('cookieConsent')) {
+            // Show cookie consent after 2 seconds
+            setTimeout(() => {
+                cookieConsent.classList.add('show');
+            }, 2000);
+        }
+        
+        acceptCookies.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            cookieConsent.classList.remove('show');
+        });
+        
+        declineCookies.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'declined');
+            cookieConsent.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

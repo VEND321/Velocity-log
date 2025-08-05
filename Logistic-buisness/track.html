@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your VelocityLog shipment in real-time. Get instant updates on your package location and delivery status.">
+    <title>Track Shipment | VelocityLog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        /* Track Page Specific Styles */
+        .track-section {
+            padding: 8rem 0;
+            min-height: 100vh;
+            background: var(--light-gray);
+        }
+        
+        body.dark-mode .track-section {
+            background: #1a1a1a;
+        }
+        
+        .track-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            width: 90%;
+        }
+        
+        body.dark-mode .track-container {
+            background: #1e1e1e;
+        }
+        
+        .track-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .track-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .track-header p {
+            color: #666;
+        }
+        
+        body.dark-mode .track-header p {
+            color: #aaa;
+        }
+        
+        .track-form {
+            margin-bottom: 3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .form-group input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.1);
+        }
+        
+        .track-btn {
+            width: 100%;
+            padding: 1rem;
+        }
+        
+        .tracking-result {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .tracking-result.show {
+            display: block;
+        }
+        
+        .tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.dark-mode .tracking-header {
+            border-bottom: 1px solid #444;
+        }
+        
+        .tracking-id {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.in-transit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-badge.delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.pending {
+            background: #fff8e1;
+            color: #ffa000;
+        }
+        
+        body.dark-mode .status-badge.in-transit {
+            background: rgba(25, 118, 210, 0.2);
+            color: #64b5f6;
+        }
+        
+        body.dark-mode .status-badge.delivered {
+            background: rgba(56, 142, 60, 0.2);
+            color: #81c784;
+        }
+        
+        body.dark-mode .status-badge.pending {
+            background: rgba(255, 160, 0, 0.2);
+            color: #ffb74d;
+        }
+        
+        .tracking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-item {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        body.dark-mode .detail-item {
+            background: #2a2a2a;
+        }
+        
+        .detail-item h4 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .detail-item h4 {
+            color: #aaa;
+        }
+        
+        .detail-item p {
+            font-weight: 500;
+        }
+        
+        .tracking-timeline {
+            margin-top: 2rem;
+        }
+        
+        .timeline-header {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0.5rem;
+            width: 2px;
+            height: 100%;
+            background: #ddd;
+        }
+        
+        body.dark-mode .timeline::before {
+            background: #444;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        
+        .timeline-date {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-time {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .timeline-time {
+            color: #aaa;
+        }
+        
+        .timeline-location {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-status {
+            color: #666;
+        }
+        
+        body.dark-mode .timeline-status {
+            color: #aaa;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+        
+        body.dark-mode .notification {
+            background: #2a2a2a;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .notification i {
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .track-section {
+                padding: 6rem 0;
+            }
+            
+            .track-container {
+                padding: 2rem;
+            }
+            
+            .tracking-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="delivery-truck">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">LOADING TRACKING SYSTEM</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-boxes-packing"></i>
+                    Velocity<span>Log</span>
+                </a>
+                <div class="flag">🇳🇬</div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html" aria-label="Home">Home</a></li>
+                    <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                    <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+                    <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+                    <li><a href="index.html" aria-label="About Us">About</a></li>
+                    <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline" aria-label="Login to your account">Login</a>
+                <a href="quote.html" class="btn" aria-label="Get a quote">Get Quote</a>
+            </div>
+            
+            <div class="mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+        <div class="close-btn" id="closeNav" aria-label="Close mobile menu">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="index.html" class="logo">
+            <i class="fas fa-boxes-packing"></i>
+            Velocity<span>Log</span>
+        </a>
+        <ul>
+            <li><a href="index.html" aria-label="Home">Home</a></li>
+            <li><a href="index.html#services" aria-label="Services">Services</a></li>
+            <li><a href="track.html" aria-label="Track Shipment">Tracking</a></li>
+            <li><a href="index.html#quote" aria-label="Get Quote">Pricing</a></li>
+            <li><a href="index.html" aria-label="About Us">About</a></li>
+            <li><a href="index.html" aria-label="Contact Us">Contact</a></li>
+            <li><a href="login.html" aria-label="Login to your account">Login</a></li>
+            <li><a href="quote.html" aria-label="Get a quote">Get Quote</a></li>
+        </ul>
+    </div>
+
+    <!-- Track Section -->
+    <section class="track-section" aria-label="Track shipment">
+        <div class="container">
+            <div class="track-container">
+                <div class="track-header">
+                    <h2>Track Your Shipment</h2>
+                    <p>Enter your tracking ID to get real-time updates on your package</p>
+                </div>
+                
+                <form class="track-form" id="trackForm">
+                    <div class="form-group">
+                        <label for="trackingId">Tracking ID</label>
+                        <input type="text" id="trackingId" placeholder="Enter your tracking ID (e.g., VL123456)" required>
+                    </div>
+                    
+                    <button type="submit" class="btn track-btn">Track Shipment</button>
+                </form>
+                
+                <div class="tracking-result" id="trackingResult">
+                    <div class="tracking-header">
+                        <div class="tracking-id" id="resultTrackingId">VL123456</div>
+                        <div class="status-badge in-transit" id="resultStatus">In Transit</div>
+                    </div>
+                    
+                    <div class="tracking-details">
+                        <div class="detail-item">
+                            <h4>Origin</h4>
+                            <p id="resultOrigin">Lagos</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Destination</h4>
+                            <p id="resultDestination">Abuja</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Estimated Delivery</h4>
+                            <p id="resultDelivery">Oct 20, 2023</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Carrier</h4>
+                            <p id="resultCarrier">VelocityLog Express</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-timeline">
+                        <h3 class="timeline-header">Shipment History</h3>
+                        <div class="timeline" id="trackingTimeline">
+                            <!-- Timeline items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-label="Footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-boxes-packing"></i>
+                        Velocity<span>Log</span>
+                    </a>
+                    <p>Delivering innovative logistics solutions worldwide with speed, precision, and reliability.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html" aria-label="Home">Home</a></li>
+                        <li><a href="index.html#services" aria-label="Services">Services</a></li>
+                        <li><a href="track.html" aria-label="Track Shipment">Track Shipment</a></li>
+                        <li><a href="index.html#quote" aria-label="Get Quote">Get Quote</a></li>
+                        <li><a href="#" aria-label="Careers">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#" aria-label="Ocean Freight">Ocean Freight</a></li>
+                        <li><a href="#" aria-label="Air Cargo">Air Cargo</a></li>
+                        <li><a href="#" aria-label="Ground Transport">Ground Transport</a></li>
+                        <li><a href="#" aria-label="Warehousing">Warehousing</a></li>
+                        <li><a href="#" aria-label="Supply Chain">Supply Chain</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Nigerian Offices</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos HQ: 123 Victoria Island</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Abuja Office: 45 Central District</li>
+                        <li><i class="fas fa-phone"></i> +234 (0) 812 345 6789</li>
+                        <li><i class="fas fa-envelope"></i> info@velocitylog.ng</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 6PM WAT</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 VelocityLog. All rights reserved. | Designed by Vend Agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2000);
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeNav = document.getElementById('closeNav');
+        
+        mobileToggle.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeNav.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileNav.classList.contains('active') && 
+                !mobileNav.contains(event.target) && 
+                !mobileToggle.contains(event.target)) {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu when a link is clicked
+        const mobileLinks = mobileNav.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = 'notification show ' + type;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Sample tracking data
+        const trackingData = {
+            'VL123456': {
+                trackingId: 'VL123456',
+                status: 'in-transit',
+                origin: 'Lagos',
+                destination: 'Abuja',
+                estimatedDelivery: 'Oct 20, 2023',
+                carrier: 'VelocityLog Express',
+                updates: [
+                    { date: '2023-10-15', time: '10:30', location: 'Lagos', status: 'Package received' },
+                    { date: '2023-10-16', time: '14:45', location: 'Lagos Warehouse', status: 'In transit to Abuja' },
+                    { date: '2023-10-17', time: '09:15', location: 'Benin City', status: 'In transit' },
+                    { date: '2023-10-18', time: '16:20', location: 'Abuja Distribution Center', status: 'Out for delivery' }
+                ]
+            },
+            'VL789012': {
+                trackingId: 'VL789012',
+                status: 'delivered',
+                origin: 'Port Harcourt',
+                destination: 'Kano',
+                estimatedDelivery: 'Oct 10, 2023',
+                carrier: 'VelocityLog Standard',
+                updates: [
+                    { date: '2023-10-05', time: '11:20', location: 'Port Harcourt', status: 'Package received' },
+                    { date: '2023-10-06', time: '13:30', location: 'Port Harcourt Warehouse', status: 'In transit to Kano' },
+                    { date: '2023-10-08', time: '10:45', location: 'Abuja', status: 'In transit' },
+                    { date: '2023-10-10', time: '14:30', location: 'Kano', status: 'Delivered' }
+                ]
+            },
+            'VL345678': {
+                trackingId: 'VL345678',
+                status: 'pending',
+                origin: 'Abuja',
+                destination: 'Enugu',
+                estimatedDelivery: 'Oct 25, 2023',
+                carrier: 'VelocityLog Economy',
+                updates: [
+                    { date: '2023-10-18', time: '15:45', location: 'Abuja', status: 'Order placed' },
+                    { date: '2023-10-19', time: '09:30', location: 'Abuja Warehouse', status: 'Package received' }
+                ]
+            }
+        };
+
+        // Track form submission
+        const trackForm = document.getElementById('trackForm');
+        const trackingResult = document.getElementById('trackingResult');
+        
+        trackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const trackingId = document.getElementById('trackingId').value.trim().toUpperCase();
+            
+            if (!trackingId) {
+                showNotification('Please enter a tracking ID', 'error');
+                return;
+            }
+            
+            // Check if tracking ID exists in our data
+            const data = trackingData[trackingId];
+            
+            if (data) {
+                // Update tracking result
+                document.getElementById('resultTrackingId').textContent = data.trackingId;
+                document.getElementById('resultStatus').textContent = data.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                document.getElementById('resultOrigin').textContent = data.origin;
+                document.getElementById('resultDestination').textContent = data.destination;
+                document.getElementById('resultDelivery').textContent = data.estimatedDelivery;
+                document.getElementById('resultCarrier').textContent = data.carrier;
+                
+                // Update status badge
+                const statusBadge = document.getElementById('resultStatus');
+                statusBadge.className = 'status-badge ' + data.status;
+                
+                // Update timeline
+                updateTimeline(data.updates);
+                
+                // Show tracking result
+                trackingResult.classList.add('show');
+                
+                showNotification('Tracking information found!');
+            } else {
+                showNotification('Tracking ID not found. Please check and try again.', 'error');
+                trackingResult.classList.remove('show');
+            }
+        });
+        
+        // Update timeline
+        function updateTimeline(updates) {
+            const timeline = document.getElementById('trackingTimeline');
+            timeline.innerHTML = '';
+            
+            updates.forEach(update => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-date">${update.date}</div>
+                    <div class="timeline-time">${update.time}</div>
+                    <div class="timeline-location">${update.location}</div>
+                    <div class="timeline-status">${update.status}</div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+            });
+        }
+
+        // Check for tracking ID in URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingIdParam = urlParams.get('id');
+        
+        if (trackingIdParam) {
+            document.getElementById('trackingId').value = trackingIdParam;
+            trackForm.dispatchEvent(new Event('submit'));
+        }
+    </script>
+</body>
+</html>
